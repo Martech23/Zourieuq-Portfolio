@@ -196,6 +196,29 @@ nav{
 .stat .n{font-family:'Space Mono',monospace; color:var(--gold); font-size:1.7rem; display:block;}
 .stat .l{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
 
+.destaque{
+  border-top:1px solid var(--line);
+  text-align:center;
+  background:radial-gradient(ellipse at 50% 0%, rgba(217,104,43,0.10), transparent 65%);
+}
+.badge-flash{
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--accent); color:var(--accent);
+  padding:7px 18px; border-radius:100px;
+  font-size:11px; letter-spacing:0.14em;
+}
+.destaque-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line);
+  max-width:640px; margin:44px auto 0;
+}
+.destaque-card{
+  background:var(--panel2); padding:36px 24px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.d-num{font-size:2.6rem; color:var(--accent);}
+.d-label{color:var(--muted); font-size:0.9rem; max-width:22ch;}
+
 /* CONTATO */
 .contato{
   text-align:center; border-top:1px solid var(--line);
@@ -371,6 +394,13 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
+        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+          <h3>CucoUSP</h3>
+          <span class="tag">2019–2020</span>
+          <p>Bicampeão nas competições de conhecimento USP para alunos do ensino médio.</p>
+        </div>
+      </div>
+      <div class="case">
         <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Araújo"></div>
         <div class="case-content">
           <h3>Guilherme Tank</h3>
@@ -410,11 +440,11 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="by-monique-rodrigues.png" alt="Monique Rodrigues"></div>
+        <div class="case-avatar"><img src="monique-rodrigues.png" alt="Monique Rodrigues"></div>
         <div class="case-content">
-          <h3>By Monique Rodrigues</h3>
+          <h3>Monique Rodrigues</h3>
           <span class="tag">Parceria</span>
-          <p>Ensaios fotográficos e captação em eventos.</p>
+          <p>Parceria na pós-produção de ensaios fotográficos e captação em eventos.</p>
         </div>
       </div>
     </div>
@@ -423,6 +453,23 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <div class="stat"><span class="n mono">100K+</span><span class="l">Curtidas</span></div>
       <div class="stat"><span class="n mono">7</span><span class="l">Marcas atendidas</span></div>
       <div class="stat"><span class="n mono">2019</span><span class="l">Início de carreira</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="destaque">
+  <div class="wrap">
+    <span class="badge-flash mono">⚡ ENTREGA EXPRESSA</span>
+    <h2 class="section-title" style="margin-top:16px;">Velocidade sem abrir mão da qualidade</h2>
+    <div class="destaque-grid">
+      <div class="destaque-card">
+        <span class="d-num mono">1:30h</span>
+        <span class="d-label">1h de captação, 30 min de vídeo em RAW editados em 1h30</span>
+      </div>
+      <div class="destaque-card">
+        <span class="d-num mono">50+</span>
+        <span class="d-label">Criativos entregues em 5 dias</span>
+      </div>
     </div>
   </div>
 </section>
