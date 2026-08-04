@@ -196,6 +196,36 @@ nav{
 .stat .n{font-family:'Space Mono',monospace; color:var(--gold); font-size:1.7rem; display:block;}
 .stat .l{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
 
+.carousel-wrap{position:relative; display:flex; align-items:center; gap:12px;}
+.carousel{
+  display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth;
+  padding-bottom:8px; scrollbar-width:none;
+}
+.carousel::-webkit-scrollbar{display:none;}
+.carousel img{
+  flex:0 0 auto; width:260px; height:340px; object-fit:cover;
+  border-radius:10px; border:1px solid var(--line);
+}
+.car-placeholder{
+  flex:1; min-height:200px; display:flex; align-items:center; justify-content:center;
+  border:1px dashed var(--line); border-radius:10px; color:var(--muted);
+  font-size:0.9rem; width:100%;
+}
+.car-slot{
+  flex:0 0 auto; width:220px; height:280px;
+  border:1px dashed var(--line); border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); font-family:'Space Mono',monospace; font-size:12px;
+  background:var(--panel);
+}
+.car-slot img{width:100%; height:100%; object-fit:cover; border-radius:9px;}
+.car-btn{
+  flex:0 0 auto; width:40px; height:40px; border-radius:50%;
+  border:1px solid var(--line); background:var(--panel);
+  color:var(--text); font-size:1.3rem; cursor:pointer; line-height:1;
+}
+.car-btn:hover{border-color:var(--accent); color:var(--accent);}
+
 .destaque{
   border-top:1px solid var(--line);
   text-align:center;
@@ -242,6 +272,8 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <a href="#competencias">Competências</a>
       <a href="#ferramentas">Ferramentas</a>
       <a href="#cases">Cases</a>
+      <a href="#trabalhos">Trabalhos</a>
+      <a href="#trabalhos-fotograficos">Timelines</a>
     </div>
     <a href="#contato" class="nav-cta">Falar agora</a>
   </nav>
@@ -457,6 +489,50 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   </div>
 </section>
 
+<section id="trabalhos">
+  <div class="wrap">
+    <span class="eyebrow">Portfólio</span>
+    <h2 class="section-title">Trabalhos</h2>
+    <p class="lede">Uma amostra de captações e edições recentes.</p>
+    <div class="carousel-wrap">
+      <button class="car-btn car-prev" aria-label="Anterior">‹</button>
+      <div class="carousel" id="carousel">
+        <div class="car-placeholder">Fotos dos trabalhos em breve</div>
+      </div>
+      <button class="car-btn car-next" aria-label="Próximo">›</button>
+    </div>
+  </div>
+</section>
+
+<section id="trabalhos-fotograficos">
+  <div class="wrap">
+    <span class="eyebrow">Portfólio</span>
+    <h2 class="section-title">Minhas Timelines</h2>
+    <p class="lede">Momentos e bastidores recentes.</p>
+    <div class="carousel-wrap">
+      <button class="car-btn car-prev-foto" aria-label="Anterior">‹</button>
+      <div class="carousel" id="carousel-fotos">
+        <div class="car-slot"><img src="timeline-01.jpg" alt="Timeline 1"></div>
+        <div class="car-slot"><img src="timeline-02.jpg" alt="Timeline 2"></div>
+        <div class="car-slot"><img src="timeline-03.jpg" alt="Timeline 3"></div>
+        <div class="car-slot"><img src="timeline-04.jpg" alt="Timeline 4"></div>
+        <div class="car-slot"><img src="timeline-05.jpg" alt="Timeline 5"></div>
+        <div class="car-slot"><img src="timeline-06.jpg" alt="Timeline 6"></div>
+        <div class="car-slot"><img src="timeline-07.jpg" alt="Timeline 7"></div>
+        <div class="car-slot"><img src="timeline-08.jpg" alt="Timeline 8"></div>
+        <div class="car-slot"><img src="timeline-09.jpg" alt="Timeline 9"></div>
+        <div class="car-slot"><img src="timeline-10.jpg" alt="Timeline 10"></div>
+        <div class="car-slot"><img src="timeline-11.jpg" alt="Timeline 11"></div>
+        <div class="car-slot"><img src="timeline-12.jpg" alt="Timeline 12"></div>
+        <div class="car-slot"><img src="timeline-13.jpg" alt="Timeline 13"></div>
+        <div class="car-slot"><img src="timeline-14.jpg" alt="Timeline 14"></div>
+        <div class="car-slot"><img src="timeline-15.jpg" alt="Timeline 15"></div>
+      </div>
+      <button class="car-btn car-next-foto" aria-label="Próximo">›</button>
+    </div>
+  </div>
+</section>
+
 <section class="destaque">
   <div class="wrap">
     <span class="badge-flash mono">⚡ ENTREGA EXPRESSA</span>
@@ -486,6 +562,24 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 </section>
 
 <footer>© 2026 Zorieuq Miranda • Vídeo & Conteúdo</footer>
+
+<script>
+  const car = document.getElementById('carousel');
+  const prevBtn = document.querySelector('.car-prev');
+  const nextBtn = document.querySelector('.car-next');
+  if(car && prevBtn && nextBtn){
+    prevBtn.addEventListener('click', () => car.scrollBy({left: -280, behavior: 'smooth'}));
+    nextBtn.addEventListener('click', () => car.scrollBy({left: 280, behavior: 'smooth'}));
+  }
+
+  const carFotos = document.getElementById('carousel-fotos');
+  const prevFotoBtn = document.querySelector('.car-prev-foto');
+  const nextFotoBtn = document.querySelector('.car-next-foto');
+  if(carFotos && prevFotoBtn && nextFotoBtn){
+    prevFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: -240, behavior: 'smooth'}));
+    nextFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: 240, behavior: 'smooth'}));
+  }
+</script>
 
 </body>
 </html>
