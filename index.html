@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Zorieuq Miranda | Vídeo & Conteúdo</title>
+<title>Zorieuq Miranda | Videomaker e Fotógrafo</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
 
@@ -148,14 +148,26 @@ nav{
 /* CASES */
 .cases{display:flex; flex-direction:column; border-top:1px solid var(--line);}
 .case{
-  display:grid; grid-template-columns:1fr 90px 2fr;
-  gap:20px; padding:28px 0; border-bottom:1px solid var(--line);
-  align-items:baseline;
+  display:flex; align-items:center; gap:24px;
+  padding:28px 0; border-bottom:1px solid var(--line);
 }
-.case h3{font-family:'Bebas Neue',sans-serif; font-size:1.6rem;}
-.case .tag{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase;}
-.case p{color:var(--muted); font-size:0.92rem;}
-@media(max-width:680px){.case{grid-template-columns:1fr; gap:8px;}}
+.case-avatar{
+  width:64px; height:64px; border-radius:50%;
+  overflow:hidden; flex-shrink:0; border:1px solid var(--line);
+  background:var(--panel2);
+}
+.case-avatar img{width:100%; height:100%; object-fit:cover;}
+.case-content{
+  display:grid; grid-template-columns:1fr 90px 2fr;
+  gap:20px; align-items:baseline; flex:1;
+}
+.case-content h3{font-family:'Bebas Neue',sans-serif; font-size:1.6rem;}
+.case-content .tag{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase;}
+.case-content p{color:var(--muted); font-size:0.92rem;}
+@media(max-width:680px){
+  .case{align-items:flex-start;}
+  .case-content{grid-template-columns:1fr; gap:8px;}
+}
 
 /* STATS STRIP */
 .stats-strip{
@@ -199,7 +211,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <div class="hero-grid">
       <div>
         <span class="badge"><span class="dot"></span>Disponível para novos projetos • 2026</span>
-        <h1 class="display">Zorieuq Miranda <span>Vídeo & Conteúdo</span></h1>
+        <h1 class="display">Zorieuq Miranda <span>Videomaker e Fotógrafo</span></h1>
         <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
         <div class="cta-row">
           <a href="#contato" class="btn-primary">Vamos trabalhar juntos</a>
@@ -286,6 +298,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <div class="tool"><h4>Content Branding Gastronômico</h4><p>Direção de conteúdo aplicada ao universo food.</p></div>
       <div class="tool"><h4>Produção de Colabs & Patrocínios</h4><p>Do briefing à entrega final de campanhas publicitárias.</p></div>
       <div class="tool"><h4>Comunicação em Público</h4><p>Apresentação de ideias para públicos jovens e adultos.</p></div>
+      <div class="tool"><h4>Mixagem de Áudio</h4><p>Mixagem para artistas e gravadoras de Hip Hop, Rap, Trap, Boombap e R&B.</p></div>
     </div>
   </div>
 </section>
@@ -297,24 +310,50 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <p class="lede">Uma linha do tempo de produção real, de instituições locais a marcas nacionais.</p>
     <div class="cases">
       <div class="case">
-        <h3>JEESP</h3>
-        <span class="tag">2019</span>
-        <p>Ouro nos Jogos Escolares do Estado de São Paulo, 1º lugar nos 3.000 metros — mesmo ano do início como Videomaker.</p>
+        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+          <h3>JEESP</h3>
+          <span class="tag">2019</span>
+          <p>Ouro nos Jogos Escolares do Estado de São Paulo, 1º lugar nos 3.000 metros — mesmo ano do início como Videomaker.</p>
+        </div>
       </div>
       <div class="case">
-        <h3>Guilherme Tank</h3>
-        <span class="tag">Parceria desde 2022</span>
-        <p>Produção, edição e content branding gastronômico para o TikToker e YouTuber, com colabs para Lojas Americanas, Ambev, Almanaque SOS, Lucas Vrau, Seara, Lacta e Manual.</p>
+        <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Araújo"></div>
+        <div class="case-content">
+          <h3>Guilherme Tank</h3>
+          <span class="tag">Parceria desde 2022</span>
+          <p>Produção, edição e content branding gastronômico para o TikToker e YouTuber, com colabs para Lojas Americanas, Ambev, Almanaque SOS, Lucas Vrau, Seara, Lacta e Manual.</p>
+        </div>
       </div>
       <div class="case">
-        <h3>Centro-Oeste</h3>
-        <span class="tag">2023–2025</span>
-        <p>Desafio fora do estado natal, com palestras para jovens e adultos e desenvolvimento de comunicação pública.</p>
+        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+          <h3>Centro-Oeste</h3>
+          <span class="tag">2023–2025</span>
+          <p>Desafio fora do estado natal, com palestras para jovens e adultos e desenvolvimento de comunicação pública.</p>
+        </div>
       </div>
       <div class="case">
-        <h3>Marcenaria Brasileira</h3>
-        <span class="tag">2026 · Em produção</span>
-        <p>Projeto de marketing em construção, em paralelo ao retorno da produção de conteúdo gastronômico e aos estudos direcionados para cinema.</p>
+        <div class="case-avatar"><img src="marcenaria-brasileira.png" alt="Marcenaria Brasileira"></div>
+        <div class="case-content">
+          <h3>Marcenaria Brasileira</h3>
+          <span class="tag">2026 · Em produção</span>
+          <p>Projeto de marketing em construção, em paralelo ao retorno da produção de conteúdo gastronômico e aos estudos direcionados para cinema.</p>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-avatar"><img src="felipe-araujo.png" alt="Felipe Araújo"></div>
+        <div class="case-content">
+          <h3>Felipe Araújo</h3>
+          <span class="tag">Cliente</span>
+          <p>Descrição do trabalho pendente — me conta o que você fez pra ele que eu atualizo.</p>
+        </div>
+      </div>
+      <div class="case">
+        <div class="case-avatar"><img src="boss-of-the-boyz.png" alt="Boss of the Boyz Records"></div>
+        <div class="case-content">
+          <h3>Boss of the Boys Records</h3>
+          <span class="tag">Gravadora · Trabalho recente</span>
+          <p>Mixagem de áudio para gravadora de Hip Hop, Rap, Trap, Boombap e R&B.</p>
+        </div>
       </div>
     </div>
     <div class="stats-strip">
