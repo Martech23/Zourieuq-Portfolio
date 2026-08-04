@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zorieuq Miranda | Vídeo & Conteúdo</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+:root{
+  --bg:#0B0A09;
+  --panel:#141210;
+  --panel2:#1B1815;
+  --accent:#D9682B;
+  --gold:#C9A24B;
+  --text:#EFEAE1;
+  --muted:#948C7D;
+  --line:rgba(239,234,225,0.10);
+  --maxw:1120px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; line-height:1.6;}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto; animation:none !important; transition:none !important;}}
+
+.display{font-family:'Bebas Neue',sans-serif; letter-spacing:0.01em;}
+.mono{font-family:'Space Mono',monospace;}
+a{color:inherit; text-decoration:none;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+.wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
+section{padding:96px 0;}
+h2.section-title{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(2rem,4.5vw,3rem);
+  margin-bottom:14px;
+}
+.eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:11px;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:12px;
+  display:block;
+}
+.lede{color:var(--muted); max-width:60ch; margin-bottom:48px;}
+
+/* NAV */
+header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(11,10,9,0.85);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+nav{
+  max-width:var(--maxw); margin:0 auto; padding:18px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+}
+.logo{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.03em;}
+.nav-links{display:flex; gap:28px; font-size:14px; color:var(--muted);}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{
+  border:1px solid var(--accent);
+  color:var(--accent);
+  padding:9px 18px;
+  border-radius:100px;
+  font-size:13px;
+  font-weight:600;
+  white-space:nowrap;
+}
+.nav-cta:hover{background:var(--accent); color:#0B0A09;}
+@media(max-width:760px){.nav-links{display:none;}}
+
+/* HERO */
+.hero{padding:110px 0 100px; text-align:left;}
+.hero-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:56px; align-items:center;}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr; gap:40px;}}
+.hero-photo-frame{
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  aspect-ratio:4/5;
+}
+.hero-photo-frame img{
+  width:100%; height:100%; object-fit:cover;
+  filter:grayscale(15%) contrast(1.05);
+}
+.hero-photo-frame::after{
+  content:"";
+  position:absolute; inset:0;
+  background:linear-gradient(180deg, transparent 55%, rgba(11,10,9,0.55) 100%);
+}
+.hero-photo-tag{
+  position:absolute; left:16px; bottom:16px; z-index:2;
+  font-family:'Space Mono',monospace; font-size:11px;
+  color:var(--text); background:rgba(11,10,9,0.55);
+  border:1px solid var(--line); padding:6px 12px; border-radius:100px;
+  backdrop-filter:blur(6px);
+}
+.badge{
+  display:inline-flex; align-items:center; gap:8px;
+  border:1px solid var(--line); border-radius:100px;
+  padding:6px 14px; font-size:12px; color:var(--muted);
+  font-family:'Space Mono',monospace; margin-bottom:28px;
+}
+.badge .dot{width:6px;height:6px;border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.hero h1{font-size:clamp(2.6rem,6.5vw,4.6rem); line-height:1.02; max-width:14ch;}
+.hero h1 span{color:var(--gold);}
+.hero .sub{margin-top:20px; color:var(--muted); max-width:56ch; font-size:1.05rem;}
+.hero .cta-row{margin-top:36px; display:flex; gap:16px; flex-wrap:wrap;}
+.btn-primary{
+  background:var(--accent); color:#0B0A09; padding:14px 26px;
+  border-radius:8px; font-weight:600; font-size:14px;
+}
+.btn-secondary{
+  border:1px solid var(--line); color:var(--text); padding:14px 26px;
+  border-radius:8px; font-weight:600; font-size:14px;
+}
+.btn-primary:hover{opacity:0.88;}
+.btn-secondary:hover{border-color:var(--accent);}
+
+/* OBJETIVO */
+.objetivo{border-top:1px solid var(--line);}
+.objetivo p{color:#CFC7B6; max-width:72ch; font-size:1.02rem;}
+.objetivo p + p{margin-top:16px;}
+
+/* CARDS - por que */
+.card-grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+.card{background:var(--panel); padding:32px 28px;}
+.card .num{font-family:'Space Mono',monospace; color:var(--gold); font-size:12px; display:block; margin-bottom:14px;}
+.card h3{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; margin-bottom:10px; letter-spacing:0.02em;}
+.card p{color:var(--muted); font-size:0.94rem;}
+
+/* COMPETENCIAS */
+.comp-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px;}
+.comp{border:1px solid var(--line); border-radius:12px; padding:28px; background:var(--panel);}
+.comp h3{font-family:'Bebas Neue',sans-serif; font-size:1.3rem; margin-bottom:10px;}
+.comp p{color:var(--muted); font-size:0.92rem;}
+
+/* FERRAMENTAS */
+.tools-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
+.tool{background:var(--panel); padding:26px 24px;}
+.tool h4{font-size:1rem; margin-bottom:6px; font-weight:600;}
+.tool p{color:var(--muted); font-size:0.88rem;}
+
+/* CASES */
+.cases{display:flex; flex-direction:column; border-top:1px solid var(--line);}
+.case{
+  display:grid; grid-template-columns:1fr 90px 2fr;
+  gap:20px; padding:28px 0; border-bottom:1px solid var(--line);
+  align-items:baseline;
+}
+.case h3{font-family:'Bebas Neue',sans-serif; font-size:1.6rem;}
+.case .tag{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase;}
+.case p{color:var(--muted); font-size:0.92rem;}
+@media(max-width:680px){.case{grid-template-columns:1fr; gap:8px;}}
+
+/* STATS STRIP */
+.stats-strip{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:1px; background:var(--line); border:1px solid var(--line); margin-top:40px;
+}
+.stat{background:var(--panel2); padding:26px 20px; text-align:center;}
+.stat .n{font-family:'Space Mono',monospace; color:var(--gold); font-size:1.7rem; display:block;}
+.stat .l{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
+
+/* CONTATO */
+.contato{
+  text-align:center; border-top:1px solid var(--line);
+  background:radial-gradient(ellipse at 50% 0%, rgba(217,104,43,0.08), transparent 60%);
+}
+.contato h2{font-family:'Bebas Neue',sans-serif; font-size:clamp(2.2rem,5vw,3.4rem); margin-bottom:18px;}
+.contato p{color:var(--muted); max-width:50ch; margin:0 auto 36px;}
+.contato .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+
+footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; color:var(--muted); font-size:12px;}
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a href="#top" class="logo">ZORIEUQ MIRANDA</a>
+    <div class="nav-links">
+      <a href="#objetivo">Sobre</a>
+      <a href="#porque">Diferenciais</a>
+      <a href="#competencias">Competências</a>
+      <a href="#ferramentas">Ferramentas</a>
+      <a href="#cases">Cases</a>
+    </div>
+    <a href="#contato" class="nav-cta">Falar agora</a>
+  </nav>
+</header>
+
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <span class="badge"><span class="dot"></span>Disponível para novos projetos • 2026</span>
+        <h1 class="display">Zorieuq Miranda <span>Vídeo & Conteúdo</span></h1>
+        <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
+        <div class="cta-row">
+          <a href="#contato" class="btn-primary">Vamos trabalhar juntos</a>
+          <a href="#objetivo" class="btn-secondary">Conheça minha trajetória</a>
+        </div>
+      </div>
+      <div class="hero-photo-frame">
+        <img src="foto-zorieuq.jpg" alt="Zorieuq Miranda">
+        <span class="hero-photo-tag mono">ZORIEUQ MIRANDA</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="objetivo" id="objetivo">
+  <div class="wrap">
+    <span class="eyebrow">Sobre</span>
+    <h2 class="section-title">Objetivo Profissional</h2>
+    <p>Comecei em 2019 como Videomaker voluntário, logo depois de conquistar o ouro nos Jogos Escolares do Estado de São Paulo. Em 2020 assumi a profissão como autônomo, atuando em Design, Videomaker, Social Media, Análise de Mídias Sociais e Fotografia.</p>
+    <p>Desde 2022 respondo pela produção, edição e content branding gastronômico dos vídeos do criador Guilherme Tank, com campanhas para marcas como Lojas Americanas, Ambev e Seara. Entre 2023 e 2025, um desafio pelo centro-oeste brasileiro me levou a dar palestras e desenvolver comunicação pública. Hoje, em 2026, sigo à frente de um projeto de marketing na Marcenaria Brasileira, mantendo a produção de conteúdo gastronômico e redirecionando os estudos para o cinema.</p>
+  </div>
+</section>
+
+<section id="porque">
+  <div class="wrap">
+    <span class="eyebrow">Diferenciais</span>
+    <h2 class="section-title">Por que investir em conteúdo com direção real?</h2>
+    <p class="lede">Marcas e criadores que investem em produção audiovisual estratégica saem na frente — não só em estética, mas em resultado mensurável.</p>
+    <div class="card-grid-3">
+      <div class="card">
+        <span class="num mono">01</span>
+        <h3>Origem prática</h3>
+        <p>Formação construída no campo, desde trabalhos voluntários até produções para marcas nacionais — sem atalho, com repertório real de bastidor.</p>
+      </div>
+      <div class="card">
+        <span class="num mono">02</span>
+        <h3>Resultado mensurável</h3>
+        <p>Vídeos com mais de 1 milhão de visualizações e 100 mil curtidas, sempre acumulando novos seguidores para os perfis atendidos.</p>
+      </div>
+      <div class="card">
+        <span class="num mono">03</span>
+        <h3>Comunicação treinada</h3>
+        <p>Experiência real apresentando ideias em público, o que se reflete em roteiros mais claros e em relacionamento direto com marca e audiência.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="competencias">
+  <div class="wrap">
+    <span class="eyebrow">Competências</span>
+    <h2 class="section-title">O que eu entrego</h2>
+    <div class="comp-grid">
+      <div class="comp">
+        <h3>Produção Audiovisual</h3>
+        <p>Produção, edição e content branding de vídeos curtos e longos, do roteiro ao corte final.</p>
+      </div>
+      <div class="comp">
+        <h3>Social Media & Estratégia</h3>
+        <p>Gestão e análise de mídias sociais com foco em crescimento de audiência e engajamento.</p>
+      </div>
+      <div class="comp">
+        <h3>Design & Fotografia</h3>
+        <p>Identidade visual e registro fotográfico a serviço da narrativa da marca.</p>
+      </div>
+      <div class="comp">
+        <h3>Colabs, Publicidade & Patrocínio</h3>
+        <p>Produção e pós-produção de parcerias comerciais com marcas de grande porte.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="ferramentas">
+  <div class="wrap">
+    <span class="eyebrow">Ferramentas & Frentes</span>
+    <h2 class="section-title">Onde atuo</h2>
+    <div class="tools-grid">
+      <div class="tool"><h4>Videomaker</h4><p>Captação e edição de vídeos curtos e longos para redes sociais.</p></div>
+      <div class="tool"><h4>Design</h4><p>Peças gráficas e identidade visual aplicadas ao conteúdo.</p></div>
+      <div class="tool"><h4>Social Media</h4><p>Gestão de perfis e estratégia de publicação.</p></div>
+      <div class="tool"><h4>Análise de Mídias Sociais</h4><p>Leitura de métricas para otimizar alcance e engajamento.</p></div>
+      <div class="tool"><h4>Fotografia</h4><p>Registro fotográfico para marca pessoal e campanhas.</p></div>
+      <div class="tool"><h4>Content Branding Gastronômico</h4><p>Direção de conteúdo aplicada ao universo food.</p></div>
+      <div class="tool"><h4>Produção de Colabs & Patrocínios</h4><p>Do briefing à entrega final de campanhas publicitárias.</p></div>
+      <div class="tool"><h4>Comunicação em Público</h4><p>Apresentação de ideias para públicos jovens e adultos.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="cases">
+  <div class="wrap">
+    <span class="eyebrow">Trajetória</span>
+    <h2 class="section-title">Cases & Marcos</h2>
+    <p class="lede">Uma linha do tempo de produção real, de instituições locais a marcas nacionais.</p>
+    <div class="cases">
+      <div class="case">
+        <h3>JEESP</h3>
+        <span class="tag">2019</span>
+        <p>Ouro nos Jogos Escolares do Estado de São Paulo, 1º lugar nos 3.000 metros — mesmo ano do início como Videomaker.</p>
+      </div>
+      <div class="case">
+        <h3>Guilherme Tank</h3>
+        <span class="tag">Parceria desde 2022</span>
+        <p>Produção, edição e content branding gastronômico para o TikToker e YouTuber, com colabs para Lojas Americanas, Ambev, Almanaque SOS, Lucas Vrau, Seara, Lacta e Manual.</p>
+      </div>
+      <div class="case">
+        <h3>Centro-Oeste</h3>
+        <span class="tag">2023–2025</span>
+        <p>Desafio fora do estado natal, com palestras para jovens e adultos e desenvolvimento de comunicação pública.</p>
+      </div>
+      <div class="case">
+        <h3>Marcenaria Brasileira</h3>
+        <span class="tag">2026 · Em produção</span>
+        <p>Projeto de marketing em construção, em paralelo ao retorno da produção de conteúdo gastronômico e aos estudos direcionados para cinema.</p>
+      </div>
+    </div>
+    <div class="stats-strip">
+      <div class="stat"><span class="n mono">1M+</span><span class="l">Visualizações</span></div>
+      <div class="stat"><span class="n mono">100K+</span><span class="l">Curtidas</span></div>
+      <div class="stat"><span class="n mono">7</span><span class="l">Marcas atendidas</span></div>
+      <div class="stat"><span class="n mono">2019</span><span class="l">Início de carreira</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="contato" id="contato">
+  <div class="wrap">
+    <h2>Vamos criar seu próximo vídeo?</h2>
+    <p>Disponível para projetos de produção audiovisual, gestão de conteúdo e parcerias de marca.</p>
+    <div class="cta-row">
+      <a href="mailto:seuemail@email.com" class="btn-primary">Enviar E-mail</a>
+      <a href="https://wa.me/55SEUNUMERO" class="btn-secondary">WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Zorieuq Miranda • Vídeo & Conteúdo</footer>
+
+</body>
+  </html>
