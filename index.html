@@ -222,6 +222,22 @@ nav{
 #carousel .car-slot{width:340px; height:200px;}
 #carousel .car-slot img{cursor:pointer;}
 
+.video-grid{
+  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+.video-slot{
+  aspect-ratio:16/9;
+  border:1px dashed var(--line); border-radius:10px;
+  background:var(--panel);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--muted); font-family:'Space Mono',monospace; font-size:12px;
+  overflow:hidden; position:relative;
+}
+.video-slot video, .video-slot iframe{
+  width:100%; height:100%; object-fit:cover; border:0;
+}
+
 .lightbox{
   position:fixed; inset:0; z-index:100;
   background:rgba(11,10,9,0.92);
@@ -297,6 +313,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <a href="#cases">Cases</a>
       <a href="#trabalhos">Trabalhos</a>
       <a href="#trabalhos-fotograficos">Fotografia</a>
+      <a href="#videos">Vídeos</a>
     </div>
     <a href="#contato" class="nav-cta">Falar agora</a>
   </nav>
@@ -555,6 +572,23 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         <div class="car-slot"><img src="timeline-15.jpg" alt="Timeline 15"></div>
       </div>
       <button class="car-btn car-next-foto" aria-label="Próximo">›</button>
+    </div>
+  </div>
+</section>
+
+<section id="videos">
+  <div class="wrap">
+    <span class="eyebrow">Portfólio</span>
+    <h2 class="section-title">Vídeos</h2>
+
+    <p class="lede" style="margin-bottom:24px;">Momento Cinegrafista</p>
+    <div class="video-grid" id="videoGridCinegrafista">
+      <div class="video-slot"><span>Vídeo em breve</span></div>
+    </div>
+
+    <p class="lede" style="margin:48px 0 24px;">Publis</p>
+    <div class="video-grid" id="videoGridPublis">
+      <div class="video-slot"><span>Vídeo em breve</span></div>
     </div>
   </div>
 </section>
