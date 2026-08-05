@@ -21,6 +21,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; line-height:1.6;}
+body.menu-open{overflow:hidden;}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto; animation:none !important; transition:none !important;}}
 
 .display{font-family:'Bebas Neue',sans-serif; letter-spacing:0.01em;}
@@ -85,9 +86,9 @@ header{
 }
 nav{
   max-width:var(--maxw); margin:0 auto; padding:18px 24px;
-  display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
 }
-.logo{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.03em;}
+.logo{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.03em; z-index:52;}
 .nav-links{display:flex; gap:28px; font-size:14px; color:var(--muted);}
 .nav-links a:hover{color:var(--text);}
 .nav-cta{
@@ -100,7 +101,87 @@ nav{
   white-space:nowrap;
 }
 .nav-cta:hover{background:var(--accent); color:#0B0A09;}
-@media(max-width:760px){.nav-links{display:none;}}
+
+/* HAMBURGER BUTTON */
+.hamburger{
+  display:none;
+  width:44px; height:44px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  cursor:pointer;
+  position:relative;
+  z-index:52;
+  flex-shrink:0;
+  transition:border-color 0.2s;
+}
+.hamburger:hover{border-color:var(--accent);}
+.hamburger span{
+  display:block;
+  width:18px; height:2px;
+  background:var(--text);
+  position:absolute;
+  left:50%; top:50%;
+  transform:translate(-50%,-50%);
+  transition:transform 0.25s ease, opacity 0.2s ease;
+}
+.hamburger span:nth-child(1){transform:translate(-50%, calc(-50% - 6px));}
+.hamburger span:nth-child(3){transform:translate(-50%, calc(-50% + 6px));}
+.hamburger[aria-expanded="true"] span:nth-child(1){
+  transform:translate(-50%,-50%) rotate(45deg);
+}
+.hamburger[aria-expanded="true"] span:nth-child(2){
+  opacity:0;
+}
+.hamburger[aria-expanded="true"] span:nth-child(3){
+  transform:translate(-50%,-50%) rotate(-45deg);
+}
+
+/* MOBILE MENU OVERLAY */
+.mobile-menu{
+  position:fixed; inset:0; z-index:51;
+  background:rgba(11,10,9,0.97);
+  backdrop-filter:blur(16px);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:8px;
+  opacity:0; visibility:hidden;
+  transition:opacity 0.3s ease, visibility 0.3s ease;
+  padding:80px 24px 40px;
+}
+.mobile-menu.open{
+  opacity:1; visibility:visible;
+}
+.mobile-menu a{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(1.6rem,6vw,2.2rem);
+  letter-spacing:0.03em;
+  color:var(--muted);
+  padding:10px 20px;
+  transition:color 0.2s;
+}
+.mobile-menu a:hover,
+.mobile-menu a:focus-visible{color:var(--text);}
+.mobile-menu .nav-cta-mobile{
+  margin-top:24px;
+  border:1px solid var(--accent);
+  color:var(--accent);
+  padding:14px 32px;
+  border-radius:100px;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:0;
+}
+.mobile-menu .nav-cta-mobile:hover{
+  background:var(--accent); color:#0B0A09;
+}
+
+@media(max-width:760px){
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:block;}
+}
 
 /* HERO */
 .hero{padding:110px 0 100px; text-align:left;}
@@ -340,6 +421,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 <header>
   <nav>
     <a href="#top" class="logo">ZORIEUQ MIRANDA</a>
+
     <div class="nav-links">
       <a href="#objetivo">Sobre</a>
       <a href="#porque">Diferenciais</a>
@@ -350,9 +432,30 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <a href="#trabalhos-fotograficos">Fotografia</a>
       <a href="#videos">Vídeos</a>
     </div>
+
     <a href="#contato" class="nav-cta">Falar agora</a>
+
+    <!-- Botão Hambúrguer -->
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
   </nav>
 </header>
+
+<!-- Menu Mobile Overlay -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Menu de navegação">
+  <a href="#objetivo">Sobre</a>
+  <a href="#porque">Diferenciais</a>
+  <a href="#competencias">Competências</a>
+  <a href="#ferramentas">Ferramentas</a>
+  <a href="#cases">Cases</a>
+  <a href="#trabalhos">Trabalhos</a>
+  <a href="#trabalhos-fotograficos">Fotografia</a>
+  <a href="#videos">Vídeos</a>
+  <a href="#contato" class="nav-cta-mobile">Falar agora</a>
+</div>
 
 <section class="hero" id="top">
   <div class="wrap">
@@ -680,6 +783,44 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 </div>
 
 <script>
+  // ========== MENU HAMBÚRGUER ==========
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  function openMenu() {
+    hamburger.setAttribute('aria-expanded', 'true');
+    hamburger.setAttribute('aria-label', 'Fechar menu');
+    mobileMenu.classList.add('open');
+    document.body.classList.add('menu-open');
+  }
+
+  function closeMenu() {
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Abrir menu');
+    mobileMenu.classList.remove('open');
+    document.body.classList.remove('menu-open');
+  }
+
+  function toggleMenu() {
+    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+    isOpen ? closeMenu() : openMenu();
+  }
+
+  hamburger.addEventListener('click', toggleMenu);
+
+  // Fecha ao clicar em qualquer link do menu
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', closeMenu);
+  });
+
+  // Fecha com Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
+      closeMenu();
+    }
+  });
+
+  // ========== CARROSSÉIS ==========
   const car = document.getElementById('carousel');
   const prevBtn = document.querySelector('.car-prev');
   const nextBtn = document.querySelector('.car-next');
@@ -715,7 +856,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     nextVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: 340, behavior: 'smooth'}));
   }
 
-  // Lightbox for Minha Timeline photos
+  // Lightbox for photos
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
