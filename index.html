@@ -252,6 +252,7 @@ nav{
 .car-slot img{width:100%; height:100%; object-fit:cover; border-radius:9px;}
 #carousel .car-slot{width:340px; height:200px;}
 #carousel .car-slot img{cursor:pointer;}
+#carousel-fotos .car-slot img{cursor:pointer;}
 
 .video-carousel{align-items:stretch;}
 .video-slot{
@@ -718,7 +719,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
-  document.querySelectorAll('#carousel .car-slot img').forEach(img => {
+  document.querySelectorAll('#carousel .car-slot img, #carousel-fotos .car-slot img').forEach(img => {
     img.addEventListener('click', () => {
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
