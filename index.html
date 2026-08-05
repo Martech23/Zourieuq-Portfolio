@@ -11,6 +11,27 @@
 <meta property="og:type" content="website">
 <meta property="og:image" content="foto-zorieuq.jpg">
 <meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Zorieuq Miranda",
+  "jobTitle": "Videomaker e Fotógrafo",
+  "url": "https://zourieuqmiranda.vercel.app/",
+  "image": "https://zourieuqmiranda.vercel.app/foto-zorieuq.jpg",
+  "email": "mailto:zorieuqmiranda@gmail.com",
+  "sameAs": [],
+  "knowsAbout": [
+    "Produção Audiovisual",
+    "Videomaker",
+    "Fotografia",
+    "Social Media",
+    "Content Branding Gastronômico",
+    "Mixagem de Áudio"
+  ],
+  "description": "Videomaker e fotógrafo especializado em produção audiovisual, content branding gastronômico e social media para marcas e criadores de conteúdo."
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap">
@@ -543,12 +564,100 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   transform:scale(1.06);
   box-shadow:0 0 0 2px rgba(201,162,75,0.5);
 }
+
+/* ===== CURSOR CUSTOMIZADO (site inteiro) ===== */
+@media(min-width:901px){
+  body{cursor:none;}
+  a, button, .thumb-card, .case, [role="button"]{cursor:none;}
+}
+.cursor-dot{
+  position:fixed; z-index:90; pointer-events:none;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--accent);
+  transform:translate(-50%,-50%);
+  opacity:0; transition:opacity 0.2s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+.cursor-ring{
+  position:fixed; z-index:90; pointer-events:none;
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(217,104,43,0.55);
+  transform:translate(-50%,-50%);
+  opacity:0; transition:opacity 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+}
+.cursor-dot.show, .cursor-ring.show{opacity:1;}
+.cursor-ring.hover{width:50px; height:50px; border-color:var(--gold);}
+@media(max-width:900px){
+  .cursor-dot, .cursor-ring{display:none;}
+}
+@media (prefers-reduced-motion: reduce){
+  .cursor-dot, .cursor-ring{display:none;}
+  body{cursor:auto;}
+}
+
+/* ===== HERO — REVELAÇÃO PALAVRA POR PALAVRA ===== */
+.word-reveal{display:inline-block; overflow:hidden; vertical-align:top;}
+.word-reveal span{
+  display:inline-block;
+  transform:translateY(110%);
+  animation:word-up 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes word-up{
+  to{transform:translateY(0);}
+}
+@media (prefers-reduced-motion: reduce){
+  .word-reveal span{animation:none; transform:none;}
+}
+
+/* ===== LINHA ANIMADA SOB OS TÍTULOS DE SEÇÃO ===== */
+h2.section-title{position:relative; padding-bottom:16px;}
+h2.section-title::after{
+  content:"";
+  position:absolute; left:0; bottom:0;
+  height:2px; width:100%;
+  background:linear-gradient(90deg, var(--accent), var(--gold));
+  transform:scaleX(0); transform-origin:left;
+  transition:transform 0.8s cubic-bezier(0.22,1,0.36,1);
+}
+h2.section-title.line-in::after{transform:scaleX(1);}
+@media (prefers-reduced-motion: reduce){
+  h2.section-title::after{transition:none; transform:scaleX(1);}
+}
+
+/* ===== FLASH DE OBTURADOR (lightbox) ===== */
+.shutter-flash{
+  position:fixed; inset:0; z-index:110; pointer-events:none;
+  background:#fff; opacity:0;
+}
+.shutter-flash.flash{
+  animation:shutter-pop 0.35s ease-out;
+}
+@keyframes shutter-pop{
+  0%{opacity:0;}
+  15%{opacity:0.85;}
+  100%{opacity:0;}
+}
+@media (prefers-reduced-motion: reduce){
+  .shutter-flash.flash{animation:none;}
+}
+
+/* ===== MODO CINEMA (vídeos) ===== */
+.cinema-overlay{
+  position:fixed; inset:0; z-index:40;
+  background:rgba(0,0,0,0); pointer-events:none;
+  transition:background 0.4s ease;
+}
+.cinema-overlay.active{background:rgba(0,0,0,0.78); pointer-events:auto;}
+.video-slot.cinema-active{position:relative; z-index:66;}
 </style>
 </head>
 <body>
 <div class="grain"></div>
 <div class="vignette"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="shutter-flash" id="shutterFlash"></div>
+<div class="cinema-overlay" id="cinemaOverlay"></div>
 <div class="play-cursor" id="playCursor">▶ PLAY</div>
 
 <header>
@@ -1065,6 +1174,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       slot.appendChild(iframe);
       slot.removeAttribute('role');
       slot.removeAttribute('tabindex');
+      if(typeof activateCinemaMode === 'function') activateCinemaMode(slot);
     }
 
     slot.addEventListener('click', loadVideo);
@@ -1082,6 +1192,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
       lightbox.classList.add('open');
+      if(typeof triggerShutterFlash === 'function') triggerShutterFlash();
     });
   });
   function closeLightbox(){ lightbox.classList.remove('open'); lightboxImg.src=''; }
@@ -1176,6 +1287,128 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   }, { passive: true });
   backToTop.addEventListener('click', () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // ========== CURSOR CUSTOMIZADO ==========
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cursorDot = document.getElementById('cursorDot');
+  const cursorRing = document.getElementById('cursorRing');
+  if(!reduceMotion && window.matchMedia('(min-width:901px)').matches && cursorDot && cursorRing){
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+    let cursorVisible = false;
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      cursorDot.style.left = mouseX + 'px';
+      cursorDot.style.top = mouseY + 'px';
+      if(!cursorVisible){
+        cursorDot.classList.add('show');
+        cursorRing.classList.add('show');
+        cursorVisible = true;
+      }
+    });
+    document.addEventListener('mouseleave', () => {
+      cursorDot.classList.remove('show');
+      cursorRing.classList.remove('show');
+      cursorVisible = false;
+    });
+    function animateRing(){
+      ringX += (mouseX - ringX) * 0.18;
+      ringY += (mouseY - ringY) * 0.18;
+      cursorRing.style.left = ringX + 'px';
+      cursorRing.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+    document.querySelectorAll('a, button, .thumb-card, .case, [role="button"]').forEach(el => {
+      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
+    });
+    // Esconde o cursor customizado ao passar por cima dos vídeos (usam o play-cursor próprio)
+    document.querySelectorAll('.video-slot').forEach(slot => {
+      slot.addEventListener('mouseenter', () => { cursorDot.style.opacity = '0'; cursorRing.style.opacity = '0'; });
+      slot.addEventListener('mouseleave', () => { cursorDot.style.opacity = ''; cursorRing.style.opacity = ''; });
+    });
+  }
+
+  // ========== HERO — REVELAÇÃO PALAVRA POR PALAVRA ==========
+  function splitWords(el, baseDelay){
+    if(!el) return;
+    const text = el.textContent;
+    const words = text.split(' ');
+    el.textContent = '';
+    words.forEach((word, i) => {
+      const wrap = document.createElement('span');
+      wrap.className = 'word-reveal';
+      const inner = document.createElement('span');
+      inner.textContent = word + (i < words.length - 1 ? '\u00A0' : '');
+      inner.style.animationDelay = (baseDelay + i * 0.06) + 's';
+      wrap.appendChild(inner);
+      el.appendChild(wrap);
+    });
+  }
+  if(!reduceMotion){
+    const heroTitleMain = document.querySelector('.hero h1');
+    if(heroTitleMain){
+      const span = heroTitleMain.querySelector('span');
+      const spanText = span ? span.textContent : '';
+      if(span) span.remove();
+      splitWords(heroTitleMain, 0.1);
+      if(spanText){
+        const spanEl = document.createElement('span');
+        splitWords(spanEl, 0.1 + heroTitleMain.textContent.trim().split(' ').length * 0.06);
+        // reconstruct: put words of spanText into a colored span appended after
+        spanEl.textContent = '';
+        const words = spanText.split(' ');
+        const baseDelay = 0.4;
+        words.forEach((word, i) => {
+          const wrap = document.createElement('span');
+          wrap.className = 'word-reveal';
+          const inner = document.createElement('span');
+          inner.textContent = word + (i < words.length - 1 ? '\u00A0' : '');
+          inner.style.animationDelay = (baseDelay + i * 0.06) + 's';
+          wrap.appendChild(inner);
+          spanEl.appendChild(wrap);
+        });
+        heroTitleMain.appendChild(document.createTextNode(' '));
+        heroTitleMain.appendChild(spanEl);
+      }
+    }
+  }
+
+  // ========== LINHA ANIMADA NOS TÍTULOS DE SEÇÃO ==========
+  if('IntersectionObserver' in window){
+    const titleObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('line-in');
+          titleObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    document.querySelectorAll('h2.section-title').forEach(el => titleObserver.observe(el));
+  } else {
+    document.querySelectorAll('h2.section-title').forEach(el => el.classList.add('line-in'));
+  }
+
+  // ========== FLASH DE OBTURADOR AO ABRIR LIGHTBOX ==========
+  const shutterFlash = document.getElementById('shutterFlash');
+  function triggerShutterFlash(){
+    if(reduceMotion || !shutterFlash) return;
+    shutterFlash.classList.remove('flash');
+    void shutterFlash.offsetWidth;
+    shutterFlash.classList.add('flash');
+  }
+
+  // ========== MODO CINEMA AO REPRODUZIR VÍDEO ==========
+  const cinemaOverlay = document.getElementById('cinemaOverlay');
+  function activateCinemaMode(slot){
+    if(!cinemaOverlay) return;
+    document.querySelectorAll('.video-slot.cinema-active').forEach(s => s.classList.remove('cinema-active'));
+    slot.classList.add('cinema-active');
+    cinemaOverlay.classList.add('active');
+  }
+  cinemaOverlay?.addEventListener('click', () => {
+    cinemaOverlay.classList.remove('active');
   });
 </script>
 
