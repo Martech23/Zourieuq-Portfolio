@@ -417,6 +417,38 @@ nav{
 .contato .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
 
 footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; color:var(--muted); font-size:12px;}
+
+/* ========== THUMBDESIGNER ========== */
+.thumb-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+  gap:20px;
+}
+.thumb-card{
+  border-radius:12px;
+  overflow:hidden;
+  border:1px solid var(--line);
+  background:var(--panel);
+  transition:transform 0.25s ease, border-color 0.25s ease;
+  cursor:pointer;
+}
+.thumb-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--accent);
+}
+.thumb-card img{
+  width:100%;
+  aspect-ratio:16/9;
+  object-fit:cover;
+  display:block;
+}
+.thumb-card .thumb-caption{
+  padding:14px 16px;
+  font-family:'Space Mono',monospace;
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:0.04em;
+}
 </style>
 </head>
 <body>
@@ -436,6 +468,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <a href="#trabalhos">Trabalhos</a>
       <a href="#trabalhos-fotograficos">Fotografia</a>
       <a href="#videos">Vídeos</a>
+      <a href="#thumbdesigner">Thumbdesigner</a>
     </div>
 
     <a href="#contato" class="nav-cta">Falar agora</a>
@@ -458,6 +491,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   <a href="#trabalhos">Trabalhos</a>
   <a href="#trabalhos-fotograficos">Fotografia</a>
   <a href="#videos">Vídeos</a>
+  <a href="#thumbdesigner">Thumbdesigner</a>
   <a href="#contato" class="nav-cta-mobile">Falar agora</a>
 </div>
 
@@ -770,6 +804,30 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   </div>
 </section>
 
+<!-- ========== NOVA SEÇÃO: THUMBDESIGNER ========== -->
+<section id="thumbdesigner">
+  <div class="wrap">
+    <span class="eyebrow">Portfólio</span>
+    <h2 class="section-title">Thumbdesigner</h2>
+    <p class="lede">Thumbnails criadas para maximizar clique, retenção e performance dos vídeos.</p>
+
+    <div class="thumb-grid">
+      <div class="thumb-card">
+        <img src="thumb-experimentos-virais.jpg" alt="Experimentos Virais - Thumbnail">
+        <div class="thumb-caption">EXPERIMENTOS VIRAIS</div>
+      </div>
+      <div class="thumb-card">
+        <img src="thumb-lanche-caro-barato.jpg" alt="Lanche Mais Caro vs Mais Barato - Thumbnail">
+        <div class="thumb-caption">LANCHE MAIS CARO VS MAIS BARATO</div>
+      </div>
+      <div class="thumb-card">
+        <img src="thumb-cozinhando-cegas.jpg" alt="Cozinhando às Cegas - Thumbnail">
+        <div class="thumb-caption">COZINHANDO ÀS CEGAS</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="destaque">
   <div class="wrap">
     <span class="badge-flash mono">ENTREGA EXPRESSA</span>
@@ -881,7 +939,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
-  document.querySelectorAll('#carousel .car-slot img, #carousel-fotos .car-slot img').forEach(img => {
+  document.querySelectorAll('#carousel .car-slot img, #carousel-fotos .car-slot img, .thumb-card img').forEach(img => {
     img.addEventListener('click', () => {
       lightboxImg.src = img.src;
       lightboxImg.alt = img.alt;
