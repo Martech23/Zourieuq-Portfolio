@@ -220,6 +220,28 @@ nav{
 }
 .car-slot img{width:100%; height:100%; object-fit:cover; border-radius:9px;}
 #carousel .car-slot{width:340px; height:200px;}
+#carousel .car-slot img{cursor:pointer;}
+
+.lightbox{
+  position:fixed; inset:0; z-index:100;
+  background:rgba(11,10,9,0.92);
+  display:none; align-items:center; justify-content:center;
+  padding:24px;
+}
+.lightbox.open{display:flex;}
+.lightbox img{
+  max-width:92vw; max-height:88vh;
+  object-fit:contain; border-radius:6px;
+}
+.lightbox-close{
+  position:absolute; top:20px; right:24px;
+  width:40px; height:40px; border-radius:50%;
+  border:1px solid var(--line); background:var(--panel);
+  color:var(--text); font-size:1.4rem; cursor:pointer; line-height:1;
+}
+@media(max-width:600px){
+  .lightbox-close{top:14px; right:14px;}
+}
 .car-btn{
   flex:0 0 auto; width:40px; height:40px; border-radius:50%;
   border:1px solid var(--line); background:var(--panel);
@@ -568,6 +590,11 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 
 <footer>© 2026 Zorieuq Miranda • Vídeo & Conteúdo</footer>
 
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">×</button>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <script>
   const car = document.getElementById('carousel');
   const prevBtn = document.querySelector('.car-prev');
@@ -584,6 +611,22 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     prevFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: -240, behavior: 'smooth'}));
     nextFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: 240, behavior: 'smooth'}));
   }
+
+  // Lightbox for Minha Timeline photos
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxClose = document.getElementById('lightboxClose');
+  document.querySelectorAll('#carousel .car-slot img').forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      lightbox.classList.add('open');
+    });
+  });
+  function closeLightbox(){ lightbox.classList.remove('open'); lightboxImg.src=''; }
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
 </script>
 
 </body>
