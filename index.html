@@ -435,7 +435,6 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 
     <a href="#contato" class="nav-cta">Falar agora</a>
 
-    <!-- Botão Hambúrguer -->
     <button class="hamburger" id="hamburger" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
       <span></span>
       <span></span>
@@ -769,7 +768,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <h2>Vamos criar seu próximo vídeo?</h2>
     <p>Disponível para projetos de produção audiovisual, gestão de conteúdo e parcerias de marca.</p>
     <div class="cta-row">
-      <a href="mailto:seuemail@email.com" class="btn-primary">Enviar E-mail</a>
+      <a href="mailto:zorieuqmiranda@gmail.com" class="btn-primary">Enviar E-mail</a>
       <a href="https://wa.me/5511988946840" class="btn-secondary">WhatsApp</a>
     </div>
   </div>
@@ -808,12 +807,10 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 
   hamburger.addEventListener('click', toggleMenu);
 
-  // Fecha ao clicar em qualquer link do menu
   mobileMenu.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', closeMenu);
   });
 
-  // Fecha com Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
       closeMenu();
