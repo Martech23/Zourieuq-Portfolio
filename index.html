@@ -222,11 +222,9 @@ nav{
 #carousel .car-slot{width:340px; height:200px;}
 #carousel .car-slot img{cursor:pointer;}
 
-.video-grid{
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-  gap:20px;
-}
+.video-carousel{align-items:stretch;}
 .video-slot{
+  flex:0 0 auto; width:320px;
   aspect-ratio:16/9;
   border:1px dashed var(--line); border-radius:10px;
   background:var(--panel);
@@ -236,6 +234,9 @@ nav{
 }
 .video-slot video, .video-slot iframe{
   width:100%; height:100%; object-fit:cover; border:0;
+}
+@media(max-width:600px){
+  .video-slot{width:82vw;}
 }
 
 .lightbox{
@@ -581,17 +582,21 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <span class="eyebrow">Portfólio</span>
     <h2 class="section-title">Momento Cinegrafista e Publis</h2>
 
-    <div class="video-grid" id="videoGridCinegrafista" style="margin-top:24px;">
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
-      <div class="video-slot"><span>Vídeo em breve</span></div>
+    <div class="carousel-wrap">
+      <button class="car-btn car-prev-video" aria-label="Anterior">‹</button>
+      <div class="carousel video-carousel" id="videoGridCinegrafista">
+        <div class="video-slot"><video src="video-publi-24h-eua.mp4" controls preload="metadata"></video></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+        <div class="video-slot"><span>Vídeo em breve</span></div>
+      </div>
+      <button class="car-btn car-next-video" aria-label="Próximo">›</button>
     </div>
   </div>
 </section>
@@ -646,6 +651,14 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   if(carFotos && prevFotoBtn && nextFotoBtn){
     prevFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: -240, behavior: 'smooth'}));
     nextFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: 240, behavior: 'smooth'}));
+  }
+
+  const videoCar = document.getElementById('videoGridCinegrafista');
+  const prevVideoBtn = document.querySelector('.car-prev-video');
+  const nextVideoBtn = document.querySelector('.car-next-video');
+  if(videoCar && prevVideoBtn && nextVideoBtn){
+    prevVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: -340, behavior: 'smooth'}));
+    nextVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: 340, behavior: 'smooth'}));
   }
 
   // Lightbox for Minha Timeline photos
