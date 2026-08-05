@@ -61,6 +61,7 @@ section{padding:96px 0;}
 }
 .play-cursor.show{transform:translate(-50%,-50%) scale(1);}
 @media(max-width:900px){ .play-cursor{display:none;} .video-slot{cursor:pointer;} }
+
 h2.section-title{
   font-family:'Bebas Neue',sans-serif;
   font-size:clamp(2rem,4.5vw,3rem);
@@ -442,13 +443,6 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   object-fit:cover;
   display:block;
 }
-.thumb-card .thumb-caption{
-  padding:14px 16px;
-  font-family:'Space Mono',monospace;
-  font-size:12px;
-  color:var(--muted);
-  letter-spacing:0.04em;
-}
 </style>
 </head>
 <body>
@@ -624,14 +618,12 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         <span class="soft-icon"><img src="logo-powerpoint.jpg" alt="PowerPoint"></span>
         <span class="soft-name">PowerPoint</span>
       </div>
-
-      <!-- Novos itens -->
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-canon.jpg" alt="Câmera DSLR Canon"></span>
+        <span class="soft-icon"><img src="logo-canon.png" alt="Câmera DSLR Canon"></span>
         <span class="soft-name">Canon DSLR</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-sony.jpg" alt="Câmera Mirrorless Sony"></span>
+        <span class="soft-icon"><img src="logo-sony.png" alt="Câmera Mirrorless Sony"></span>
         <span class="soft-name">Sony Mirrorless</span>
       </div>
       <div class="soft-badge">
@@ -639,7 +631,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         <span class="soft-name">iPhone</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-android.jpg" alt="Captação com Android"></span>
+        <span class="soft-icon"><img src="logo-android.png" alt="Captação com Android"></span>
         <span class="soft-name">Android</span>
       </div>
     </div>
@@ -804,7 +796,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   </div>
 </section>
 
-<!-- ========== NOVA SEÇÃO: THUMBDESIGNER ========== -->
+<!-- ========== THUMBDESIGNER ========== -->
 <section id="thumbdesigner">
   <div class="wrap">
     <span class="eyebrow">Portfólio</span>
@@ -813,16 +805,13 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 
     <div class="thumb-grid">
       <div class="thumb-card">
-        <img src="thumb-experimentos-virais.jpg" alt="Experimentos Virais - Thumbnail">
-        <div class="thumb-caption">EXPERIMENTOS VIRAIS</div>
+        <img src="thumb-experimentos-virais.jpg" alt="Experimentos Virais">
       </div>
       <div class="thumb-card">
-        <img src="thumb-lanche-caro-barato.jpg" alt="Lanche Mais Caro vs Mais Barato - Thumbnail">
-        <div class="thumb-caption">LANCHE MAIS CARO VS MAIS BARATO</div>
+        <img src="thumb-lanche-caro-barato.jpg" alt="Lanche Mais Caro vs Mais Barato">
       </div>
       <div class="thumb-card">
-        <img src="thumb-cozinhando-cegas.jpg" alt="Cozinhando às Cegas - Thumbnail">
-        <div class="thumb-caption">COZINHANDO ÀS CEGAS</div>
+        <img src="thumb-cozinhando-cegas.jpg" alt="Cozinhando às Cegas">
       </div>
     </div>
   </div>
@@ -935,7 +924,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     nextVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: 340, behavior: 'smooth'}));
   }
 
-  // Lightbox for photos
+  // Lightbox for photos + thumbs
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
