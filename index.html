@@ -4,9 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zorieuq Miranda | Videomaker e Fotógrafo</title>
+<meta name="description" content="Zorieuq Miranda — Videomaker e fotógrafo especializado em produção audiovisual, content branding gastronômico e social media para marcas e criadores de conteúdo.">
+<meta property="og:title" content="Zorieuq Miranda | Videomaker e Fotógrafo">
+<meta property="og:description" content="Produção, edição e estratégia de conteúdo audiovisual para marcas e criadores. Mais de 1M de visualizações entregues.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="foto-zorieuq.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
-
 :root{
   --bg:#0B0A09;
   --panel:#141210;
@@ -48,7 +55,7 @@ section{padding:96px 0;}
 @media (prefers-reduced-motion: reduce){ .grain{animation:none;} }
 
 /* PLAY CURSOR ON VIDEO HOVER */
-.video-slot{cursor:none;}
+.video-slot{cursor:none; background:var(--panel); position:relative;}
 .play-cursor{
   position:fixed; z-index:70; pointer-events:none;
   width:64px; height:64px; border-radius:50%;
@@ -276,8 +283,8 @@ nav{
 .soft-icon img{width:100%; height:100%; object-fit:contain;}
 .soft-name{font-size:12px; color:var(--muted); font-family:'Space Mono',monospace;}
 
-/* Inverte o logo preto da Apple para ficar visível no fundo escuro */
-.soft-badge img[src="logo-iphone.png"]{
+/* Inverte ícones de fundo escuro para ficarem visíveis */
+.soft-icon.invert img{
   filter: invert(1);
 }
 
@@ -323,6 +330,7 @@ nav{
 .carousel img{
   flex:0 0 auto; width:260px; height:340px; object-fit:cover;
   border-radius:10px; border:1px solid var(--line);
+  background:var(--panel2);
 }
 .car-placeholder{
   flex:1; min-height:200px; display:flex; align-items:center; justify-content:center;
@@ -353,6 +361,33 @@ nav{
 }
 .video-slot video, .video-slot iframe{
   width:100%; height:100%; object-fit:cover; border:0;
+}
+/* Facade de thumbnail do YouTube até o clique - evita carregar 10 iframes de uma vez */
+.video-slot{cursor:pointer; padding:0; border-style:solid;}
+.yt-facade{
+  position:absolute; inset:0; width:100%; height:100%;
+  background-size:cover; background-position:center;
+  display:flex; align-items:center; justify-content:center;
+}
+.yt-facade::before{
+  content:"";
+  position:absolute; inset:0;
+  background:rgba(11,10,9,0.28);
+  transition:background 0.2s ease;
+}
+.video-slot:hover .yt-facade::before{background:rgba(11,10,9,0.45);}
+.yt-play-btn{
+  position:relative; z-index:1;
+  width:56px; height:56px; border-radius:50%;
+  background:var(--accent); color:#0B0A09;
+  display:flex; align-items:center; justify-content:center;
+  font-size:0; box-shadow:0 4px 18px rgba(0,0,0,0.4);
+}
+.yt-play-btn::after{
+  content:"";
+  border-style:solid; border-width:9px 0 9px 15px;
+  border-color:transparent transparent transparent #0B0A09;
+  margin-left:4px;
 }
 @media(max-width:600px){
   .video-slot{width:82vw;}
@@ -443,6 +478,13 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   object-fit:cover;
   display:block;
 }
+
+/* Reveal-on-scroll (respeita prefers-reduced-motion) */
+.reveal{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
+.reveal.in-view{opacity:1; transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .reveal{opacity:1; transform:none; transition:none;}
+}
 </style>
 </head>
 <body>
@@ -501,7 +543,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="hero-photo-frame">
-        <img src="foto-zorieuq.jpg" alt="Zorieuq Miranda">
+        <img src="foto-zorieuq.jpg" alt="Zorieuq Miranda" width="640" height="800" fetchpriority="high">
         <span class="hero-photo-tag mono">ZORIEUQ MIRANDA</span>
       </div>
     </div>
@@ -523,17 +565,17 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <h2 class="section-title">Por que investir em conteúdo com direção real?</h2>
     <p class="lede">Marcas e criadores que investem em produção audiovisual estratégica saem na frente — não só em estética, mas em resultado mensurável.</p>
     <div class="card-grid-3">
-      <div class="card">
+      <div class="card reveal">
         <span class="num mono">01</span>
         <h3>Origem prática</h3>
         <p>Formação construída no campo, desde trabalhos voluntários até produções para marcas nacionais — sem atalho, com repertório real de bastidor.</p>
       </div>
-      <div class="card">
+      <div class="card reveal">
         <span class="num mono">02</span>
         <h3>Resultado mensurável</h3>
         <p>Vídeos com mais de 1 milhão de visualizações e 100 mil curtidas, sempre acumulando novos seguidores para os perfis atendidos.</p>
       </div>
-      <div class="card">
+      <div class="card reveal">
         <span class="num mono">03</span>
         <h3>Comunicação treinada</h3>
         <p>Experiência real apresentando ideias em público, o que se reflete em roteiros mais claros e em relacionamento direto com marca e audiência.</p>
@@ -547,19 +589,19 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <span class="eyebrow">Competências</span>
     <h2 class="section-title">O que eu entrego</h2>
     <div class="comp-grid">
-      <div class="comp">
+      <div class="comp reveal">
         <h3>Produção Audiovisual</h3>
         <p>Produção, edição e content branding de vídeos curtos e longos, do roteiro ao corte final.</p>
       </div>
-      <div class="comp">
+      <div class="comp reveal">
         <h3>Social Media & Estratégia</h3>
         <p>Gestão e análise de mídias sociais com foco em crescimento de audiência e engajamento.</p>
       </div>
-      <div class="comp">
+      <div class="comp reveal">
         <h3>Design & Fotografia</h3>
         <p>Identidade visual e registro fotográfico a serviço da narrativa da marca.</p>
       </div>
-      <div class="comp">
+      <div class="comp reveal">
         <h3>Colabs, Publicidade & Patrocínio</h3>
         <p>Produção e pós-produção de parcerias comerciais com marcas de grande porte.</p>
       </div>
@@ -587,51 +629,51 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
       <h2 class="section-title" style="grid-column:1/-1; margin-top:32px; margin-bottom:0;">Ferramentas que domino</h2>
 
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-premiere.png" alt="Adobe Premiere"></span>
+        <span class="soft-icon"><img src="logo-premiere.png" alt="Adobe Premiere" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Adobe Premiere</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-lightroom.png" alt="Adobe Lightroom"></span>
+        <span class="soft-icon"><img src="logo-lightroom.png" alt="Adobe Lightroom" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Adobe Lightroom</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-capcut.png" alt="CapCut Mobile"></span>
+        <span class="soft-icon"><img src="logo-capcut.png" alt="CapCut Mobile" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">CapCut Mobile</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-canva.png" alt="Canva"></span>
+        <span class="soft-icon"><img src="logo-canva.png" alt="Canva" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Canva</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-illustrator.png" alt="Adobe Illustrator"></span>
+        <span class="soft-icon"><img src="logo-illustrator.png" alt="Adobe Illustrator" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Adobe Illustrator</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-audition.png" alt="Adobe Audition"></span>
+        <span class="soft-icon"><img src="logo-audition.png" alt="Adobe Audition" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Adobe Audition</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-blackmagic.jpg" alt="Blackmagic Cam"></span>
+        <span class="soft-icon"><img src="logo-blackmagic.jpg" alt="Blackmagic Cam" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Blackmagic Cam</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-powerpoint.jpg" alt="PowerPoint"></span>
+        <span class="soft-icon"><img src="logo-powerpoint.jpg" alt="PowerPoint" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">PowerPoint</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-canon.png" alt="Câmera DSLR Canon"></span>
+        <span class="soft-icon"><img src="logo-canon.png" alt="Câmera DSLR Canon" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Canon DSLR</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-sony.png" alt="Câmera Mirrorless Sony"></span>
+        <span class="soft-icon"><img src="logo-sony.png" alt="Câmera Mirrorless Sony" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Sony Mirrorless</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-iphone.png" alt="Captação com iPhone"></span>
+        <span class="soft-icon invert"><img src="logo-iphone.png" alt="Captação com iPhone" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">iPhone</span>
       </div>
       <div class="soft-badge">
-        <span class="soft-icon"><img src="logo-android.png" alt="Captação com Android"></span>
+        <span class="soft-icon"><img src="logo-android.png" alt="Captação com Android" loading="lazy" width="44" height="44"></span>
         <span class="soft-name">Android</span>
       </div>
     </div>
@@ -645,21 +687,21 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <p class="lede">Uma linha do tempo de produção real, de instituições locais a marcas nacionais.</p>
     <div class="cases">
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+        <div class="case-content" style="grid-column:1/-1;">
           <h3>JEESP</h3>
           <span class="tag">2019</span>
           <p>Ouro nos Jogos Escolares do Estado de São Paulo, 1º lugar nos 3.000 metros — mesmo ano do início como Videomaker.</p>
         </div>
       </div>
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+        <div class="case-content" style="grid-column:1/-1;">
           <h3>CucoUSP</h3>
           <span class="tag">2019–2020</span>
           <p>Bicampeão nas competições de conhecimento USP para alunos do ensino médio.</p>
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Araújo"></div>
+        <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Araújo" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Guilherme Tank</h3>
           <span class="tag">Parceria desde 2022</span>
@@ -667,14 +709,14 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1; display:grid; grid-template-columns:1fr 90px 2fr; gap:20px;">
+        <div class="case-content" style="grid-column:1/-1;">
           <h3>Centro-Oeste</h3>
           <span class="tag">2023–2025</span>
           <p>Desafio fora do estado natal, com palestras para jovens e adultos e desenvolvimento de comunicação pública.</p>
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="marcenaria-brasileira.png" alt="Marcenaria Brasileira"></div>
+        <div class="case-avatar"><img src="marcenaria-brasileira.png" alt="Marcenaria Brasileira" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Marcenaria Brasileira</h3>
           <span class="tag">2026 · Em produção</span>
@@ -682,7 +724,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="felipe-araujo.png" alt="Felipe Araújo"></div>
+        <div class="case-avatar"><img src="felipe-araujo.png" alt="Felipe Araújo" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Felipe Araújo</h3>
           <span class="tag">Cliente</span>
@@ -690,7 +732,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="boss-of-the-boyz.png" alt="Boss of the Boyz Records"></div>
+        <div class="case-avatar"><img src="boss-of-the-boyz.png" alt="Boss of the Boyz Records" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Boss of the Boys Records</h3>
           <span class="tag">Gravadora · Trabalho recente</span>
@@ -698,7 +740,7 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="monique-rodrigues.png" alt="Monique Rodrigues"></div>
+        <div class="case-avatar"><img src="monique-rodrigues.png" alt="Monique Rodrigues" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Monique Rodrigues</h3>
           <span class="tag">Parceria</span>
@@ -723,14 +765,14 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <div class="carousel-wrap">
       <button class="car-btn car-prev" aria-label="Anterior">‹</button>
       <div class="carousel" id="carousel">
-        <div class="car-slot"><img src="minha-timeline-01.jpg" alt="Minha Timeline 1"></div>
-        <div class="car-slot"><img src="minha-timeline-02.jpg" alt="Minha Timeline 2"></div>
-        <div class="car-slot"><img src="minha-timeline-03.jpg" alt="Minha Timeline 3"></div>
-        <div class="car-slot"><img src="minha-timeline-04.jpg" alt="Minha Timeline 4"></div>
-        <div class="car-slot"><img src="minha-timeline-05.jpg" alt="Minha Timeline 5"></div>
-        <div class="car-slot"><img src="minha-timeline-06.jpg" alt="Minha Timeline 6"></div>
-        <div class="car-slot"><img src="minha-timeline-07.jpg" alt="Minha Timeline 7"></div>
-        <div class="car-slot"><img src="minha-timeline-08.jpg" alt="Minha Timeline 8"></div>
+        <div class="car-slot"><img src="minha-timeline-01.jpg" alt="Minha Timeline 1" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-02.jpg" alt="Minha Timeline 2" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-03.jpg" alt="Minha Timeline 3" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-04.jpg" alt="Minha Timeline 4" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-05.jpg" alt="Minha Timeline 5" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-06.jpg" alt="Minha Timeline 6" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-07.jpg" alt="Minha Timeline 7" loading="lazy" width="340" height="200"></div>
+        <div class="car-slot"><img src="minha-timeline-08.jpg" alt="Minha Timeline 8" loading="lazy" width="340" height="200"></div>
       </div>
       <button class="car-btn car-next" aria-label="Próximo">›</button>
     </div>
@@ -745,26 +787,26 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <div class="carousel-wrap">
       <button class="car-btn car-prev-foto" aria-label="Anterior">‹</button>
       <div class="carousel" id="carousel-fotos">
-        <div class="car-slot"><img src="timeline-01.jpg" alt="Timeline 1"></div>
-        <div class="car-slot"><img src="timeline-02.jpg" alt="Timeline 2"></div>
-        <div class="car-slot"><img src="timeline-03.jpg" alt="Timeline 3"></div>
-        <div class="car-slot"><img src="timeline-04.jpg" alt="Timeline 4"></div>
-        <div class="car-slot"><img src="timeline-05.jpg" alt="Timeline 5"></div>
-        <div class="car-slot"><img src="photo-pista-autodromo.jpg" alt="Timeline 6"></div>
-        <div class="car-slot"><img src="photo-edicao-laptop.jpg" alt="Timeline 7"></div>
-        <div class="car-slot"><img src="timeline-08.jpg" alt="Timeline 8"></div>
-        <div class="car-slot"><img src="timeline-09.jpg" alt="Timeline 9"></div>
-        <div class="car-slot"><img src="timeline-10.jpg" alt="Timeline 10"></div>
-        <div class="car-slot"><img src="timeline-11.jpg" alt="Timeline 11"></div>
-        <div class="car-slot"><img src="timeline-12.jpg" alt="Timeline 12"></div>
-        <div class="car-slot"><img src="timeline-13.jpg" alt="Timeline 13"></div>
-        <div class="car-slot"><img src="photo-estudio-greenscreen.jpg" alt="Timeline 14"></div>
-        <div class="car-slot"><img src="photo-theatro-municipal.jpg" alt="Timeline 15"></div>
-        <div class="car-slot"><img src="photo-paisagem-montanha.jpg" alt="Timeline 16"></div>
-        <div class="car-slot"><img src="photo-por-do-sol-pista.jpg" alt="Timeline 17"></div>
-        <div class="car-slot"><img src="photo-retrato-dupla-01.jpg" alt="Timeline 18"></div>
-        <div class="car-slot"><img src="photo-theatro-municipal-noite.jpg" alt="Timeline 19"></div>
-        <div class="car-slot"><img src="photo-retrato-dupla-02.jpg" alt="Timeline 20"></div>
+        <div class="car-slot"><img src="timeline-01.jpg" alt="Timeline 1" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-02.jpg" alt="Timeline 2" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-03.jpg" alt="Timeline 3" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-04.jpg" alt="Timeline 4" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-05.jpg" alt="Timeline 5" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-pista-autodromo.jpg" alt="Timeline 6" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-edicao-laptop.jpg" alt="Timeline 7" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-08.jpg" alt="Timeline 8" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-09.jpg" alt="Timeline 9" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-10.jpg" alt="Timeline 10" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-11.jpg" alt="Timeline 11" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-12.jpg" alt="Timeline 12" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="timeline-13.jpg" alt="Timeline 13" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-estudio-greenscreen.jpg" alt="Timeline 14" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-theatro-municipal.jpg" alt="Timeline 15" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-paisagem-montanha.jpg" alt="Timeline 16" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-por-do-sol-pista.jpg" alt="Timeline 17" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-retrato-dupla-01.jpg" alt="Timeline 18" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-theatro-municipal-noite.jpg" alt="Timeline 19" loading="lazy" width="220" height="280"></div>
+        <div class="car-slot"><img src="photo-retrato-dupla-02.jpg" alt="Timeline 20" loading="lazy" width="220" height="280"></div>
       </div>
       <button class="car-btn car-next-foto" aria-label="Próximo">›</button>
     </div>
@@ -779,16 +821,16 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     <div class="carousel-wrap">
       <button class="car-btn car-prev-video" aria-label="Anterior">‹</button>
       <div class="carousel video-carousel" id="videoGridCinegrafista">
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/EfmYnEurwkc" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/VzI9adx2wss" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/LnlvN42nki0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/iPfRfkSLmB0" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/oDEey--M8rY" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/fBYvaqQppGQ" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/zFNDnOxV_so" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/3jr89cIDB0g" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/8ZHy5_CKb_Y" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-        <div class="video-slot"><iframe src="https://www.youtube.com/embed/DPfi2gKOcYY" title="YouTube video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+        <div class="video-slot" data-yt-id="EfmYnEurwkc"></div>
+        <div class="video-slot" data-yt-id="VzI9adx2wss"></div>
+        <div class="video-slot" data-yt-id="LnlvN42nki0"></div>
+        <div class="video-slot" data-yt-id="iPfRfkSLmB0"></div>
+        <div class="video-slot" data-yt-id="oDEey--M8rY"></div>
+        <div class="video-slot" data-yt-id="fBYvaqQppGQ"></div>
+        <div class="video-slot" data-yt-id="zFNDnOxV_so"></div>
+        <div class="video-slot" data-yt-id="3jr89cIDB0g"></div>
+        <div class="video-slot" data-yt-id="8ZHy5_CKb_Y"></div>
+        <div class="video-slot" data-yt-id="DPfi2gKOcYY"></div>
         <div class="video-slot"><span>Vídeo em breve</span></div>
       </div>
       <button class="car-btn car-next-video" aria-label="Próximo">›</button>
@@ -805,13 +847,13 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 
     <div class="thumb-grid">
       <div class="thumb-card">
-        <img src="thumb-experimentos-virais.jpg" alt="Experimentos Virais">
+        <img src="thumb-experimentos-virais.jpg" alt="Experimentos Virais" loading="lazy" width="480" height="270">
       </div>
       <div class="thumb-card">
-        <img src="thumb-lanche-caro-barato.jpg" alt="Lanche Mais Caro vs Mais Barato">
+        <img src="thumb-lanche-caro-barato.jpg" alt="Lanche Mais Caro vs Mais Barato" loading="lazy" width="480" height="270">
       </div>
       <div class="thumb-card">
-        <img src="thumb-cozinhando-cegas.jpg" alt="Cozinhando às Cegas">
+        <img src="thumb-cozinhando-cegas.jpg" alt="Cozinhando às Cegas" loading="lazy" width="480" height="270">
       </div>
     </div>
   </div>
@@ -924,6 +966,36 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
     nextVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: 340, behavior: 'smooth'}));
   }
 
+  // ========== YOUTUBE FACADE (lazy-load real player só no clique) ==========
+  document.querySelectorAll('.video-slot[data-yt-id]').forEach(slot => {
+    const videoId = slot.dataset.ytId;
+    const facade = document.createElement('div');
+    facade.className = 'yt-facade';
+    facade.style.backgroundImage = `url(https://i.ytimg.com/vi/${videoId}/hqdefault.jpg)`;
+    facade.innerHTML = '<span class="yt-play-btn" aria-hidden="true"></span>';
+    slot.appendChild(facade);
+    slot.setAttribute('role', 'button');
+    slot.setAttribute('tabindex', '0');
+    slot.setAttribute('aria-label', 'Reproduzir vídeo');
+
+    function loadVideo(){
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      iframe.title = 'YouTube video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+      iframe.allowFullscreen = true;
+      slot.innerHTML = '';
+      slot.appendChild(iframe);
+      slot.removeAttribute('role');
+      slot.removeAttribute('tabindex');
+    }
+
+    slot.addEventListener('click', loadVideo);
+    slot.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); loadVideo(); }
+    });
+  });
+
   // Lightbox for photos + thumbs
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
@@ -939,6 +1011,21 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   lightboxClose.addEventListener('click', closeLightbox);
   lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
   document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
+  // ========== REVEAL ON SCROLL ==========
+  if('IntersectionObserver' in window){
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          entry.target.classList.add('in-view');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  } else {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
+  }
 </script>
 
 </body>
