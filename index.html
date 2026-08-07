@@ -5,12 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Zorieuq Miranda | Videomaker e Fotógrafo</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="canonical" href="https://zourieuqmiranda.vercel.app/">
+<meta name="theme-color" content="#0B0A09">
 <meta name="description" content="Zorieuq Miranda — Videomaker e fotógrafo especializado em produção audiovisual, content branding gastronômico e social media para marcas e criadores de conteúdo.">
 <meta property="og:title" content="Zorieuq Miranda | Videomaker e Fotógrafo">
 <meta property="og:description" content="Produção, edição e estratégia de conteúdo audiovisual para marcas e criadores. Mais de 1M de visualizações entregues.">
 <meta property="og:type" content="website">
-<meta property="og:image" content="foto-zorieuq.jpg">
+<meta property="og:site_name" content="Zorieuq Miranda">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://zourieuqmiranda.vercel.app/">
+<meta property="og:image" content="https://zourieuqmiranda.vercel.app/foto-zorieuq.jpg">
+<meta property="og:image:width" content="675">
+<meta property="og:image:height" content="900">
+<meta property="og:image:alt" content="Retrato de Zorieuq Miranda">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zorieuq Miranda | Videomaker e Fotógrafo">
+<meta name="twitter:description" content="Produção, edição e estratégia de conteúdo audiovisual para marcas e criadores. Mais de 1M de visualizações entregues.">
+<meta name="twitter:image" content="https://zourieuqmiranda.vercel.app/foto-zorieuq.jpg">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -34,7 +45,8 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono&family=Inter:wght@400;600&display=swap">
+<script>document.documentElement.className += ' js';</script>
 <style>
 :root{
   --bg:#0B0A09;
@@ -50,7 +62,7 @@
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
 body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; line-height:1.6;}
-body.menu-open{overflow:hidden;}
+body.menu-open, body.lightbox-open{overflow:hidden;}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto; animation:none !important; transition:none !important;}}
 
 .display{font-family:'Bebas Neue',sans-serif; letter-spacing:0.01em;}
@@ -77,7 +89,7 @@ section{padding:96px 0;}
 @media (prefers-reduced-motion: reduce){ .grain{animation:none;} }
 
 /* PLAY CURSOR ON VIDEO HOVER */
-.video-slot{cursor:none; background:var(--panel); position:relative;}
+.video-slot{background:var(--panel); position:relative;}
 .play-cursor{
   position:fixed; z-index:70; pointer-events:none;
   width:64px; height:64px; border-radius:50%;
@@ -245,16 +257,10 @@ nav{
   .hero{min-height:min(88vh, 680px); padding-bottom:56px;}
   .hero-bg{object-position:center 20%;}
 }
-.badge{
-  display:inline-flex; align-items:center; gap:8px;
-  border:1px solid var(--line); border-radius:100px;
-  padding:6px 14px; font-size:12px; color:var(--muted);
-  font-family:'Space Mono',monospace; margin-bottom:28px;
-}
-.badge .dot{width:6px;height:6px;border-radius:50%; background:var(--accent); animation:pulse 1.6s infinite;}
-@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
 .hero h1{font-size:clamp(2.6rem,6.5vw,4.6rem); line-height:1.02; max-width:14ch;}
-.hero h1 span{color:var(--gold);}
+/* Classe explicita: a animacao palavra-por-palavra embrulha cada palavra em
+   <span>, entao um seletor de descendente pintaria o titulo inteiro de dourado. */
+.hero h1 .gold{color:var(--gold);}
 .hero .sub{margin-top:20px; color:var(--muted); max-width:56ch; font-size:1.05rem;}
 .hero .cta-row{margin-top:36px; display:flex; gap:16px; flex-wrap:wrap;}
 .btn-primary{
@@ -357,6 +363,8 @@ nav{
 .case-content h3{font-family:'Bebas Neue',sans-serif; font-size:1.6rem;}
 .case-content .tag{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase;}
 .case-content p{color:var(--muted); font-size:0.92rem;}
+/* Cases sem avatar ocupam a linha inteira */
+.case-content.full{grid-column:1/-1;}
 @media(max-width:680px){
   .case{align-items:flex-start;}
   .case-content{grid-template-columns:1fr; gap:8px;}
@@ -375,18 +383,10 @@ nav{
 .carousel{
   display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth;
   padding-bottom:8px; scrollbar-width:none;
+  scroll-snap-type:x mandatory;
 }
 .carousel::-webkit-scrollbar{display:none;}
-.carousel img{
-  flex:0 0 auto; width:260px; height:340px; object-fit:cover;
-  border-radius:10px; border:1px solid var(--line);
-  background:var(--panel2);
-}
-.car-placeholder{
-  flex:1; min-height:200px; display:flex; align-items:center; justify-content:center;
-  border:1px dashed var(--line); border-radius:10px; color:var(--muted);
-  font-size:0.9rem; width:100%;
-}
+.carousel > *{scroll-snap-align:start;}
 .car-slot{
   flex:0 0 auto; width:220px; height:280px;
   border:1px dashed var(--line); border-radius:10px;
@@ -409,11 +409,14 @@ nav{
   color:var(--muted); font-family:'Space Mono',monospace; font-size:12px;
   overflow:hidden; position:relative;
 }
-.video-slot video, .video-slot iframe{
-  width:100%; height:100%; object-fit:cover; border:0;
+.video-slot iframe{
+  width:100%; height:100%; border:0;
 }
 /* Facade de thumbnail do YouTube até o clique - evita carregar 10 iframes de uma vez */
 .video-slot{cursor:pointer; padding:0; border-style:solid;}
+/* Enquanto o iframe toca, os eventos de mouse ficam presos dentro dele: o
+   cursor "PLAY" congelaria numa posicao antiga, entao ele e desativado. */
+.video-slot.is-playing{cursor:default;}
 .yt-facade{
   position:absolute; inset:0; width:100%; height:100%;
   background-size:cover; background-position:center;
@@ -528,11 +531,13 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   display:block;
 }
 
-/* Reveal-on-scroll (respeita prefers-reduced-motion) */
-.reveal{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
-.reveal.in-view{opacity:1; transform:translateY(0);}
+/* Reveal-on-scroll (respeita prefers-reduced-motion).
+   O estado escondido so vale quando ha JS para revela-lo de novo — por isso
+   depende de .js no <html>. Sem JS o conteudo aparece normalmente. */
+.js .reveal{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
+.js .reveal.in-view{opacity:1; transform:translateY(0);}
 @media (prefers-reduced-motion: reduce){
-  .reveal{opacity:1; transform:none; transition:none;}
+  .js .reveal{opacity:1; transform:none; transition:none;}
 }
 
 /* VINHETA GERAL */
@@ -577,11 +582,16 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
   box-shadow:0 0 0 2px rgba(201,162,75,0.5);
 }
 
-/* ===== CURSOR CUSTOMIZADO (site inteiro) ===== */
-@media(min-width:901px){
-  body{cursor:none;}
-  a, button, .thumb-card, .case, [role="button"]{cursor:none;}
-}
+/* ===== CURSOR CUSTOMIZADO (site inteiro) =====
+   O cursor nativo so e escondido depois que o JS confirma que o substituto
+   esta ativo (classe .custom-cursor no body). Sem isso, uma falha de JS ou um
+   redimensionamento de janela deixaria a pagina sem cursor nenhum. */
+body.custom-cursor,
+body.custom-cursor a,
+body.custom-cursor button,
+body.custom-cursor .thumb-card,
+body.custom-cursor .case,
+body.custom-cursor [role="button"]{cursor:none;}
 .cursor-dot{
   position:fixed; z-index:90; pointer-events:none;
   width:8px; height:8px; border-radius:50%;
@@ -652,14 +662,16 @@ h2.section-title.line-in::after{transform:scaleX(1);}
   .shutter-flash.flash{animation:none;}
 }
 
-/* ===== MODO CINEMA (vídeos) ===== */
+/* ===== MODO CINEMA (vídeos) =====
+   z-index acima do header (50) e do menu (51), senao o cabecalho continuaria
+   aceso por cima do escurecimento. */
 .cinema-overlay{
-  position:fixed; inset:0; z-index:40;
+  position:fixed; inset:0; z-index:58;
   background:rgba(0,0,0,0); pointer-events:none;
   transition:background 0.4s ease;
 }
 .cinema-overlay.active{background:rgba(0,0,0,0.78); pointer-events:auto;}
-.video-slot.cinema-active{position:relative; z-index:66;}
+.video-slot.cinema-active{position:relative; z-index:62;}
 </style>
 </head>
 <body>
@@ -713,9 +725,9 @@ h2.section-title.line-in::after{transform:scaleX(1);}
 </div>
 
 <section class="hero" id="top">
-  <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="Theatro Municipal de São Paulo iluminado à noite, ao fundo do retrato de Zorieuq Miranda" width="960" height="1280" fetchpriority="high">
+  <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
   <div class="wrap hero-content">
-    <h1 class="display">Zorieuq Miranda <span>Videomaker e Fotógrafo</span></h1>
+    <h1 class="display">Zorieuq Miranda <span class="gold">Videomaker e Fotógrafo</span></h1>
     <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
     <div class="cta-row">
       <a href="#contato" class="btn-primary">Vamos trabalhar juntos</a>
@@ -734,7 +746,7 @@ h2.section-title.line-in::after{transform:scaleX(1);}
         <p>Desde 2022 respondo pela produção, edição e content branding gastronômico dos vídeos do criador Guilherme Tank, com campanhas para marcas como Lojas Americanas, Ambev e Seara. Entre 2023 e 2025, um desafio pelo centro-oeste brasileiro me levou a dar palestras e desenvolver comunicação pública. Hoje, em 2026, sigo à frente de um projeto de marketing na Marcenaria Brasileira, mantendo a produção de conteúdo gastronômico e redirecionando os estudos para o cinema.</p>
       </div>
       <div class="objetivo-photo reveal">
-        <img src="foto-zorieuq.jpg" alt="Zorieuq Miranda" loading="lazy" width="640" height="800">
+        <img src="foto-zorieuq.jpg" alt="Retrato de Zorieuq Miranda" loading="lazy" width="675" height="900">
       </div>
     </div>
   </div>
@@ -883,21 +895,21 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     <p class="lede">Uma linha do tempo de produção real, de instituições locais a marcas nacionais.</p>
     <div class="cases">
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1;">
+        <div class="case-content full">
           <h3>JEESP</h3>
           <span class="tag">2019</span>
           <p>Ouro nos Jogos Escolares do Estado de São Paulo, 1º lugar nos 3.000 metros — mesmo ano do início como Videomaker.</p>
         </div>
       </div>
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1;">
+        <div class="case-content full">
           <h3>CucoUSP</h3>
           <span class="tag">2019–2020</span>
           <p>Bicampeão nas competições de conhecimento USP para alunos do ensino médio.</p>
         </div>
       </div>
       <div class="case">
-        <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Araújo" loading="lazy" width="64" height="64"></div>
+        <div class="case-avatar"><img src="guilherme-araujo.png" alt="Guilherme Tank" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
           <h3>Guilherme Tank</h3>
           <span class="tag">Parceria desde 2022</span>
@@ -905,7 +917,7 @@ h2.section-title.line-in::after{transform:scaleX(1);}
         </div>
       </div>
       <div class="case">
-        <div class="case-content" style="grid-column:1/-1;">
+        <div class="case-content full">
           <h3>Centro-Oeste</h3>
           <span class="tag">2023–2025</span>
           <p>Desafio fora do estado natal, com palestras para jovens e adultos e desenvolvimento de comunicação pública.</p>
@@ -930,7 +942,7 @@ h2.section-title.line-in::after{transform:scaleX(1);}
       <div class="case">
         <div class="case-avatar"><img src="boss-of-the-boyz.png" alt="Boss of the Boyz Records" loading="lazy" width="64" height="64"></div>
         <div class="case-content">
-          <h3>Boss of the Boys Records</h3>
+          <h3>Boss of the Boyz Records</h3>
           <span class="tag">Gravadora · Trabalho recente</span>
           <p>Mixagem de áudio e edição de clipes musicais para gravadora de Hip Hop, Rap, Trap, Boombap e R&B.</p>
         </div>
@@ -947,7 +959,7 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     <div class="stats-strip">
       <div class="stat"><span class="n mono counter" data-target="1" data-suffix="M+">0</span><span class="l">Visualizações</span></div>
       <div class="stat"><span class="n mono counter" data-target="100" data-suffix="K+">0</span><span class="l">Curtidas</span></div>
-      <div class="stat"><span class="n mono counter" data-target="5" data-suffix="">0</span><span class="l">Marcas atendidas</span></div>
+      <div class="stat"><span class="n mono counter" data-target="7" data-suffix="">0</span><span class="l">Marcas atendidas</span></div>
       <div class="stat"><span class="n mono counter" data-target="2019" data-suffix="" data-no-format="true">0</span><span class="l">Início de carreira</span></div>
     </div>
   </div>
@@ -1031,6 +1043,12 @@ h2.section-title.line-in::after{transform:scaleX(1);}
       </div>
       <button class="car-btn car-next-video" aria-label="Próximo">›</button>
     </div>
+    <noscript>
+      <p class="lede" style="margin-top:24px;">
+        Os vídeos precisam de JavaScript para tocar aqui.
+        <a href="https://www.youtube.com/watch?v=EfmYnEurwkc" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:underline;">Assista à seleção no YouTube</a>.
+      </p>
+    </noscript>
   </div>
 </section>
 
@@ -1078,7 +1096,7 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     <p>Disponível para projetos de produção audiovisual, gestão de conteúdo e parcerias de marca.</p>
     <div class="cta-row">
       <a href="mailto:zorieuqmiranda@gmail.com" class="btn-primary">Enviar E-mail</a>
-      <a href="https://wa.me/5511988946840" class="btn-secondary">WhatsApp</a>
+      <a href="https://wa.me/5511988946840" class="btn-secondary" target="_blank" rel="noopener">WhatsApp</a>
     </div>
   </div>
 </section>
@@ -1093,15 +1111,19 @@ h2.section-title.line-in::after{transform:scaleX(1);}
 </div>
 
 <script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // ========== MENU HAMBÚRGUER ==========
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
+  const menuItems = mobileMenu.querySelectorAll('a');
 
   function openMenu() {
     hamburger.setAttribute('aria-expanded', 'true');
     hamburger.setAttribute('aria-label', 'Fechar menu');
     mobileMenu.classList.add('open');
     document.body.classList.add('menu-open');
+    menuItems[0].focus();
   }
 
   function closeMenu() {
@@ -1111,60 +1133,58 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     document.body.classList.remove('menu-open');
   }
 
-  function toggleMenu() {
-    const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
-    isOpen ? closeMenu() : openMenu();
-  }
+  function menuAberto(){ return mobileMenu.classList.contains('open'); }
 
-  hamburger.addEventListener('click', toggleMenu);
+  hamburger.addEventListener('click', () => menuAberto() ? closeMenu() : openMenu());
 
-  mobileMenu.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', closeMenu);
-  });
+  menuItems.forEach(link => link.addEventListener('click', closeMenu));
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && mobileMenu.classList.contains('open')) {
-      closeMenu();
-    }
+  // Prende o foco dentro do menu: sem isso a tabulação passa para os links que
+  // estão atrás do overlay, invisíveis para quem enxerga a tela.
+  mobileMenu.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab') return;
+    const primeiro = menuItems[0], ultimo = menuItems[menuItems.length - 1];
+    if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+    else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
   });
 
   // ========== CARROSSÉIS ==========
-  const car = document.getElementById('carousel');
-  const prevBtn = document.querySelector('.car-prev');
-  const nextBtn = document.querySelector('.car-next');
-  if(car && prevBtn && nextBtn){
-    prevBtn.addEventListener('click', () => car.scrollBy({left: -280, behavior: 'smooth'}));
-    nextBtn.addEventListener('click', () => car.scrollBy({left: 280, behavior: 'smooth'}));
+  // O passo é medido a partir do item real; valores fixos desalinhavam o
+  // carrossel um pouco mais a cada clique.
+  function ligarCarrossel(carId, prevSel, nextSel){
+    const car = document.getElementById(carId);
+    const prev = document.querySelector(prevSel);
+    const next = document.querySelector(nextSel);
+    if(!car || !prev || !next) return;
+    const passo = () => {
+      const item = car.firstElementChild;
+      if(!item) return 300;
+      const gap = parseFloat(getComputedStyle(car).columnGap) || 16;
+      return item.getBoundingClientRect().width + gap;
+    };
+    prev.addEventListener('click', () => car.scrollBy({left: -passo(), behavior: 'smooth'}));
+    next.addEventListener('click', () => car.scrollBy({left:  passo(), behavior: 'smooth'}));
   }
+  ligarCarrossel('carousel', '.car-prev', '.car-next');
+  ligarCarrossel('carousel-fotos', '.car-prev-foto', '.car-next-foto');
+  ligarCarrossel('videoGridCinegrafista', '.car-prev-video', '.car-next-video');
 
-  const carFotos = document.getElementById('carousel-fotos');
-  const prevFotoBtn = document.querySelector('.car-prev-foto');
-  const nextFotoBtn = document.querySelector('.car-next-foto');
-  if(carFotos && prevFotoBtn && nextFotoBtn){
-    prevFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: -240, behavior: 'smooth'}));
-    nextFotoBtn.addEventListener('click', () => carFotos.scrollBy({left: 240, behavior: 'smooth'}));
-  }
-
-  // Custom play cursor over video slots
+  // ========== CURSOR "PLAY" SOBRE OS VÍDEOS ==========
   const playCursor = document.getElementById('playCursor');
   document.querySelectorAll('.video-slot').forEach(slot => {
-    slot.addEventListener('mouseenter', () => playCursor.classList.add('show'));
+    slot.addEventListener('mouseenter', () => {
+      if (slot.classList.contains('is-playing')) return;
+      playCursor.classList.add('show');
+    });
     slot.addEventListener('mouseleave', () => playCursor.classList.remove('show'));
     slot.addEventListener('mousemove', (e) => {
+      if (slot.classList.contains('is-playing')) return;
       playCursor.style.left = e.clientX + 'px';
       playCursor.style.top = e.clientY + 'px';
     });
   });
 
-  const videoCar = document.getElementById('videoGridCinegrafista');
-  const prevVideoBtn = document.querySelector('.car-prev-video');
-  const nextVideoBtn = document.querySelector('.car-next-video');
-  if(videoCar && prevVideoBtn && nextVideoBtn){
-    prevVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: -340, behavior: 'smooth'}));
-    nextVideoBtn.addEventListener('click', () => videoCar.scrollBy({left: 340, behavior: 'smooth'}));
-  }
-
-  // ========== YOUTUBE FACADE (lazy-load real player só no clique) ==========
+  // ========== YOUTUBE FACADE (carrega o player só no clique) ==========
   document.querySelectorAll('.video-slot[data-yt-id]').forEach(slot => {
     const videoId = slot.dataset.ytId;
     const facade = document.createElement('div');
@@ -1178,15 +1198,20 @@ h2.section-title.line-in::after{transform:scaleX(1);}
 
     function loadVideo(){
       const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      iframe.title = 'YouTube video';
+      iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1`;
+      iframe.title = 'Vídeo de Zorieuq Miranda no YouTube';
+      iframe.loading = 'lazy';
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
       iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
       iframe.allowFullscreen = true;
       slot.innerHTML = '';
       slot.appendChild(iframe);
       slot.removeAttribute('role');
       slot.removeAttribute('tabindex');
-      if(typeof activateCinemaMode === 'function') activateCinemaMode(slot);
+      slot.removeAttribute('aria-label');
+      slot.classList.add('is-playing');
+      playCursor.classList.remove('show');
+      ativarModoCinema(slot);
     }
 
     slot.addEventListener('click', loadVideo);
@@ -1195,22 +1220,61 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     });
   });
 
-  // Lightbox for photos + thumbs
+  // ========== LIGHTBOX ==========
   const lightbox = document.getElementById('lightbox');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxClose = document.getElementById('lightboxClose');
+  let focoAnterior = null;
+
+  lightbox.setAttribute('role', 'dialog');
+  lightbox.setAttribute('aria-modal', 'true');
+  lightbox.setAttribute('aria-label', 'Imagem ampliada');
+  lightbox.setAttribute('aria-hidden', 'true');
+
+  function abrirLightbox(img){
+    focoAnterior = document.activeElement;
+    lightboxImg.src = img.src;
+    lightboxImg.alt = img.alt;
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+    lightboxClose.focus();
+    dispararFlash();
+  }
+  function fecharLightbox(){
+    if(!lightbox.classList.contains('open')) return;
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    lightboxImg.src = '';
+    document.body.classList.remove('lightbox-open');
+    if(focoAnterior) focoAnterior.focus();
+  }
+
+  // As imagens do portfólio viram alvos de teclado — antes só respondiam a clique.
   document.querySelectorAll('#carousel .car-slot img, #carousel-fotos .car-slot img, .thumb-card img').forEach(img => {
-    img.addEventListener('click', () => {
-      lightboxImg.src = img.src;
-      lightboxImg.alt = img.alt;
-      lightbox.classList.add('open');
-      if(typeof triggerShutterFlash === 'function') triggerShutterFlash();
+    img.setAttribute('role', 'button');
+    img.setAttribute('tabindex', '0');
+    img.setAttribute('aria-label', 'Ampliar imagem: ' + (img.alt || 'foto do portfólio'));
+    img.addEventListener('click', () => abrirLightbox(img));
+    img.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); abrirLightbox(img); }
     });
   });
-  function closeLightbox(){ lightbox.classList.remove('open'); lightboxImg.src=''; }
-  lightboxClose.addEventListener('click', closeLightbox);
-  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
-  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeLightbox(); });
+
+  lightboxClose.addEventListener('click', fecharLightbox);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) fecharLightbox(); });
+  // Mantém o foco preso no botão de fechar enquanto o lightbox está aberto.
+  lightbox.addEventListener('keydown', (e) => {
+    if(e.key === 'Tab'){ e.preventDefault(); lightboxClose.focus(); }
+  });
+
+  // ========== ESCAPE FECHA O QUE ESTIVER ABERTO ==========
+  document.addEventListener('keydown', (e) => {
+    if(e.key !== 'Escape') return;
+    if(lightbox.classList.contains('open')) fecharLightbox();
+    else if(menuAberto()) closeMenu();
+    else fecharModoCinema();
+  });
 
   // ========== REVEAL ON SCROLL ==========
   if('IntersectionObserver' in window){
@@ -1227,16 +1291,29 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
   }
 
-  // ========== SCROLL PROGRESS BAR ==========
+  // ========== BARRA DE PROGRESSO + BOTÃO VOLTAR AO TOPO ==========
+  // Um único listener de scroll, agendado por requestAnimationFrame.
   const scrollProgress = document.getElementById('scrollProgress');
-  function updateScrollProgress(){
-    const scrollTop = window.scrollY;
+  const backToTop = document.getElementById('backToTop');
+  let tickAgendado = false;
+
+  function aoRolar(){
     const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
     scrollProgress.style.width = pct + '%';
+    backToTop.classList.toggle('show', window.scrollY > 600);
+    tickAgendado = false;
   }
-  window.addEventListener('scroll', updateScrollProgress, { passive: true });
-  updateScrollProgress();
+  window.addEventListener('scroll', () => {
+    if(tickAgendado) return;
+    tickAgendado = true;
+    requestAnimationFrame(aoRolar);
+  }, { passive: true });
+  aoRolar();
+
+  backToTop.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
 
   // ========== NAV LINK ATIVO CONFORME SEÇÃO ==========
   const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
@@ -1244,13 +1321,10 @@ h2.section-title.line-in::after{transform:scaleX(1);}
   if('IntersectionObserver' in window && sections.length){
     const navObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        const id = '#' + entry.target.id;
-        const link = document.querySelector(`.nav-links a[href="${id}"]`);
-        if(!link) return;
-        if(entry.isIntersecting){
-          navLinks.forEach(l => l.classList.remove('active'));
-          link.classList.add('active');
-        }
+        const link = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if(!link || !entry.isIntersecting) return;
+        navLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
       });
     }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
     sections.forEach(sec => navObserver.observe(sec));
@@ -1261,23 +1335,19 @@ h2.section-title.line-in::after{transform:scaleX(1);}
   function animateCounter(el){
     const target = parseFloat(el.dataset.target);
     const suffix = el.dataset.suffix || '';
-    const noFormat = el.dataset.noFormat === 'true';
     const duration = 1400;
     const start = performance.now();
     function tick(now){
       const progress = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - progress, 3);
-      const value = target * eased;
-      el.textContent = (noFormat ? Math.round(value) : (Number.isInteger(target) && target < 10 ? Math.round(value) : (Math.round(value * 10) / 10))) + (noFormat ? '' : suffix);
-      if(progress < 1){
-        requestAnimationFrame(tick);
-      } else {
-        el.textContent = (noFormat ? target : target + suffix);
-      }
+      // Sempre inteiro: o cálculo antigo produzia "63.7K+" no meio da animação.
+      el.textContent = Math.round(target * eased) + suffix;
+      if(progress < 1) requestAnimationFrame(tick);
+      else el.textContent = target + suffix;
     }
     requestAnimationFrame(tick);
   }
-  if('IntersectionObserver' in window && counters.length){
+  if('IntersectionObserver' in window && counters.length && !reduceMotion){
     const counterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if(entry.isIntersecting){
@@ -1291,100 +1361,97 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     counters.forEach(c => { c.textContent = c.dataset.target + (c.dataset.suffix || ''); });
   }
 
-  // ========== BOTÃO VOLTAR AO TOPO ==========
-  const backToTop = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    if(window.scrollY > 600){ backToTop.classList.add('show'); }
-    else{ backToTop.classList.remove('show'); }
-  }, { passive: true });
-  backToTop.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
   // ========== CURSOR CUSTOMIZADO ==========
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const cursorDot = document.getElementById('cursorDot');
   const cursorRing = document.getElementById('cursorRing');
-  if(!reduceMotion && window.matchMedia('(min-width:901px)').matches && cursorDot && cursorRing){
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
-    let cursorVisible = false;
+  const telaGrande = window.matchMedia('(min-width:901px)');
+  let cursorLigado = false;
+
+  function ligarCursor(){
+    if(cursorLigado || reduceMotion || !telaGrande.matches || !cursorDot || !cursorRing) return;
+    cursorLigado = true;
+    // Só agora o cursor nativo some — o substituto já está garantido.
+    document.body.classList.add('custom-cursor');
+
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, visivel = false;
+
     document.addEventListener('mousemove', (e) => {
       mouseX = e.clientX; mouseY = e.clientY;
       cursorDot.style.left = mouseX + 'px';
       cursorDot.style.top = mouseY + 'px';
-      if(!cursorVisible){
+      if(!visivel){
         cursorDot.classList.add('show');
         cursorRing.classList.add('show');
-        cursorVisible = true;
+        visivel = true;
       }
     });
     document.addEventListener('mouseleave', () => {
       cursorDot.classList.remove('show');
       cursorRing.classList.remove('show');
-      cursorVisible = false;
+      visivel = false;
     });
-    function animateRing(){
+    (function animateRing(){
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
       cursorRing.style.left = ringX + 'px';
       cursorRing.style.top = ringY + 'px';
       requestAnimationFrame(animateRing);
-    }
-    animateRing();
+    })();
+
     document.querySelectorAll('a, button, .thumb-card, .case, [role="button"]').forEach(el => {
       el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
       el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
     });
-    // Esconde o cursor customizado ao passar por cima dos vídeos (usam o play-cursor próprio)
     document.querySelectorAll('.video-slot').forEach(slot => {
       slot.addEventListener('mouseenter', () => { cursorDot.style.opacity = '0'; cursorRing.style.opacity = '0'; });
       slot.addEventListener('mouseleave', () => { cursorDot.style.opacity = ''; cursorRing.style.opacity = ''; });
     });
   }
 
+  function desligarCursor(){
+    if(!cursorLigado) return;
+    document.body.classList.remove('custom-cursor');
+    cursorDot.classList.remove('show');
+    cursorRing.classList.remove('show');
+  }
+
+  ligarCursor();
+  // Ao redimensionar de tela estreita para larga o cursor precisa ser (re)ativado,
+  // senão a página ficaria sem cursor nenhum.
+  telaGrande.addEventListener('change', (e) => {
+    if(e.matches){ cursorLigado ? document.body.classList.add('custom-cursor') : ligarCursor(); }
+    else desligarCursor();
+  });
+
   // ========== HERO — REVELAÇÃO PALAVRA POR PALAVRA ==========
-  function splitWords(el, baseDelay){
-    if(!el) return;
-    const text = el.textContent;
-    const words = text.split(' ');
-    el.textContent = '';
-    words.forEach((word, i) => {
-      const wrap = document.createElement('span');
-      wrap.className = 'word-reveal';
-      const inner = document.createElement('span');
-      inner.textContent = word + (i < words.length - 1 ? '\u00A0' : '');
-      inner.style.animationDelay = (baseDelay + i * 0.06) + 's';
-      wrap.appendChild(inner);
-      el.appendChild(wrap);
+  // Preserva a classe .gold de cada trecho e mantém espaços reais entre as
+  // palavras, para que o título ainda quebre linha em telas estreitas.
+  function revelarTitulo(h1){
+    const trechos = [];
+    h1.childNodes.forEach(n => {
+      const texto = n.textContent;
+      if(!texto || !texto.trim()) return;
+      trechos.push({ texto, gold: n.nodeType === 1 && n.classList.contains('gold') });
+    });
+    h1.textContent = '';
+    let i = 0;
+    trechos.forEach(trecho => {
+      trecho.texto.trim().split(/\s+/).forEach(palavra => {
+        const wrap = document.createElement('span');
+        wrap.className = 'word-reveal' + (trecho.gold ? ' gold' : '');
+        const inner = document.createElement('span');
+        inner.textContent = palavra;
+        inner.style.animationDelay = (0.1 + i * 0.06) + 's';
+        wrap.appendChild(inner);
+        h1.appendChild(wrap);
+        h1.appendChild(document.createTextNode(' '));
+        i++;
+      });
     });
   }
   if(!reduceMotion){
-    const heroTitleMain = document.querySelector('.hero h1');
-    if(heroTitleMain){
-      const span = heroTitleMain.querySelector('span');
-      const spanText = span ? span.textContent : '';
-      if(span) span.remove();
-      splitWords(heroTitleMain, 0.1);
-      if(spanText){
-        const spanEl = document.createElement('span');
-        splitWords(spanEl, 0.1 + heroTitleMain.textContent.trim().split(' ').length * 0.06);
-        // reconstruct: put words of spanText into a colored span appended after
-        spanEl.textContent = '';
-        const words = spanText.split(' ');
-        const baseDelay = 0.4;
-        words.forEach((word, i) => {
-          const wrap = document.createElement('span');
-          wrap.className = 'word-reveal';
-          const inner = document.createElement('span');
-          inner.textContent = word + (i < words.length - 1 ? '\u00A0' : '');
-          inner.style.animationDelay = (baseDelay + i * 0.06) + 's';
-          wrap.appendChild(inner);
-          spanEl.appendChild(wrap);
-        });
-        heroTitleMain.appendChild(document.createTextNode(' '));
-        heroTitleMain.appendChild(spanEl);
-      }
-    }
+    const heroTitle = document.querySelector('.hero h1');
+    if(heroTitle) revelarTitulo(heroTitle);
   }
 
   // ========== LINHA ANIMADA NOS TÍTULOS DE SEÇÃO ==========
@@ -1402,9 +1469,9 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     document.querySelectorAll('h2.section-title').forEach(el => el.classList.add('line-in'));
   }
 
-  // ========== FLASH DE OBTURADOR AO ABRIR LIGHTBOX ==========
+  // ========== FLASH DE OBTURADOR AO ABRIR O LIGHTBOX ==========
   const shutterFlash = document.getElementById('shutterFlash');
-  function triggerShutterFlash(){
+  function dispararFlash(){
     if(reduceMotion || !shutterFlash) return;
     shutterFlash.classList.remove('flash');
     void shutterFlash.offsetWidth;
@@ -1413,15 +1480,19 @@ h2.section-title.line-in::after{transform:scaleX(1);}
 
   // ========== MODO CINEMA AO REPRODUZIR VÍDEO ==========
   const cinemaOverlay = document.getElementById('cinemaOverlay');
-  function activateCinemaMode(slot){
+  function ativarModoCinema(slot){
     if(!cinemaOverlay) return;
     document.querySelectorAll('.video-slot.cinema-active').forEach(s => s.classList.remove('cinema-active'));
     slot.classList.add('cinema-active');
     cinemaOverlay.classList.add('active');
   }
-  cinemaOverlay?.addEventListener('click', () => {
+  function fecharModoCinema(){
+    if(!cinemaOverlay || !cinemaOverlay.classList.contains('active')) return;
     cinemaOverlay.classList.remove('active');
-  });
+    // A classe ficava presa no slot e o mantinha acima do resto da página.
+    document.querySelectorAll('.video-slot.cinema-active').forEach(s => s.classList.remove('cinema-active'));
+  }
+  if(cinemaOverlay) cinemaOverlay.addEventListener('click', fecharModoCinema);
 </script>
 
 </body>
