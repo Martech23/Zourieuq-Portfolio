@@ -45,375 +45,460 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono&family=Inter:wght@400;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono&family=Inter:wght@400;600&display=swap">
 <script>document.documentElement.className += ' js';</script>
 <style>
+/* ==========================================================================
+   VIDRO E HOLOGRAMA
+   Superficies translúcidas sobre um fundo de auroras irisadas. O gradiente
+   violeta -> ciano -> âmbar percorre a página conforme a rolagem (--iris-shift).
+   ========================================================================== */
 :root{
-  --bg:#0B0A09;
-  --panel:#141210;
-  --panel2:#1B1815;
-  --accent:#D9682B;
-  --gold:#C9A24B;
-  --text:#EFEAE1;
-  --muted:#948C7D;
-  --line:rgba(239,234,225,0.10);
+  /* base */
+  --bg:#07060C;
+  --bg-2:#0C0A15;
+  --text:#ECEAF5;
+  --muted:#9B94B4;
+  --ink:#07060C;              /* texto sobre superficies claras */
+
+  /* vidro */
+  --glass:rgba(255,255,255,0.055);
+  --glass-2:rgba(255,255,255,0.085);
+  --glass-line:rgba(255,255,255,0.14);
+  --glass-line-soft:rgba(255,255,255,0.085);
+  --blur:14px;
+
+  /* iridescencia */
+  --iris-1:#8B5CF6;
+  --iris-2:#22D3EE;
+  --iris-3:#F0A868;
+  --accent:#22D3EE;
+  --gold:#F0A868;
+  --iris-shift:0%;            /* atualizado pelo scroll */
+
   --maxw:1120px;
+  --r:18px;                   /* raio padrao das superficies */
 }
+
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg); color:var(--text); font-family:'Inter',sans-serif; line-height:1.6;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',sans-serif;
+  line-height:1.6;
+  overflow-x:hidden;
+}
 body.menu-open, body.lightbox-open{overflow:hidden;}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto; animation:none !important; transition:none !important;}}
 
-.display{font-family:'Bebas Neue',sans-serif; letter-spacing:0.01em;}
-.mono{font-family:'Space Mono',monospace;}
 a{color:inherit; text-decoration:none;}
-:focus-visible{outline:2px solid var(--accent); outline-offset:3px;}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px;}
+
+.display{font-family:'Space Grotesk',sans-serif; font-weight:700; letter-spacing:-0.02em;}
+.mono{font-family:'Space Mono',monospace;}
 .wrap{max-width:var(--maxw); margin:0 auto; padding:0 24px;}
-section{padding:96px 0;}
+section{padding:104px 0; position:relative; z-index:1;}
 
-/* FILM GRAIN OVERLAY */
-.grain{
-  position:fixed; inset:0; z-index:60; pointer-events:none;
-  opacity:0.05; mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain-shift 0.5s steps(4) infinite;
+/* ===== AURORA DE FUNDO =====
+   Tres manchas de cor que derivam devagar. E o que da o que refratar para o
+   vidro — sem elas os paineis translúcidos ficariam apenas cinzas. */
+.aurora{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden;}
+.orb{position:absolute; border-radius:50%; will-change:transform;}
+.orb-1{
+  width:62vw; height:62vw; left:-16vw; top:-12vh;
+  background:radial-gradient(circle at 50% 50%, rgba(139,92,246,0.50), rgba(139,92,246,0) 68%);
+  animation:drift-1 30s ease-in-out infinite alternate;
 }
-@keyframes grain-shift{
-  0%{transform:translate(0,0);}
-  25%{transform:translate(-2%,1%);}
-  50%{transform:translate(1%,-2%);}
-  75%{transform:translate(-1%,2%);}
-  100%{transform:translate(0,0);}
+.orb-2{
+  width:56vw; height:56vw; right:-14vw; top:22vh;
+  background:radial-gradient(circle at 50% 50%, rgba(34,211,238,0.38), rgba(34,211,238,0) 68%);
+  animation:drift-2 38s ease-in-out infinite alternate;
 }
-@media (prefers-reduced-motion: reduce){ .grain{animation:none;} }
+.orb-3{
+  width:54vw; height:54vw; left:18vw; bottom:-20vh;
+  background:radial-gradient(circle at 50% 50%, rgba(240,168,104,0.30), rgba(240,168,104,0) 70%);
+  animation:drift-3 46s ease-in-out infinite alternate;
+}
+@keyframes drift-1{to{transform:translate3d(12vw, 8vh, 0) scale(1.15);}}
+@keyframes drift-2{to{transform:translate3d(-14vw, 12vh, 0) scale(1.1);}}
+@keyframes drift-3{to{transform:translate3d(10vw, -10vh, 0) scale(1.2);}}
 
-/* PLAY CURSOR ON VIDEO HOVER */
-.video-slot{background:var(--panel); position:relative;}
-.play-cursor{
-  position:fixed; z-index:70; pointer-events:none;
-  width:64px; height:64px; border-radius:50%;
-  background:var(--accent); color:#0B0A09;
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Space Mono',monospace; font-size:11px; letter-spacing:0.08em;
-  transform:translate(-50%,-50%) scale(0);
-  transition:transform 0.18s ease;
-  opacity:0.94;
+/* ===== SUPERFICIES DE VIDRO =====
+   .surface     -> translúcido simples (barato, para elementos repetidos)
+   .surface-fx  -> + desfoque real do fundo (caro, reservado aos paineis maiores) */
+nav, .hero-panel, .card, .comp, .tool, .case, .stat, .destaque-card,
+.soft-badge, .car-slot, .video-slot, .thumb-card, .status-pill,
+.btn-secondary, .car-btn, .lightbox-close, .back-to-top, .hamburger{
+  background:var(--glass);
+  border:1px solid var(--glass-line-soft);
+  border-radius:var(--r);
+  position:relative;
 }
-.play-cursor.show{transform:translate(-50%,-50%) scale(1);}
-@media(max-width:900px){ .play-cursor{display:none;} .video-slot{cursor:pointer;} }
+/* Desfocar o fundo custa caro: medido no scroll, 26 paineis com backdrop-filter
+   deixaram a pagina ~3x mais lenta. Ele fica so onde e indispensavel — o que
+   flutua sobre a foto do hero ou sobre o conteudo rolando. */
+/* Só o painel do hero desfoca de verdade: ele fica sobre a foto do teatro, onde
+   o efeito de vidro se ve. A nav e sticky — desfocar ali obriga o navegador a
+   recompor a pagina inteira a cada quadro da rolagem (medido: 2x mais lento),
+   e sobre um fundo escuro um vidro mais denso fica praticamente igual. */
+.hero-panel{
+  -webkit-backdrop-filter:blur(var(--blur));
+  backdrop-filter:blur(var(--blur));
+}
+nav{background:rgba(14,12,24,0.88);}
+/* Os cartoes repetidos ficam sobre a aurora, que ja e um degrade suave: um
+   brilho direcional imita o reflexo do vidro sem nenhum custo de composicao. */
+.card, .comp, .case, .stat, .destaque-card, .tool,
+.soft-badge, .car-slot, .video-slot, .thumb-card{
+  background:linear-gradient(155deg, rgba(255,255,255,0.10), rgba(255,255,255,0.038) 62%);
+}
+/* Sem suporte a backdrop-filter o texto ficaria sobre a aurora crua. */
+@supports not ((backdrop-filter:blur(4px)) or (-webkit-backdrop-filter:blur(4px))){
+  .hero-panel{background:rgba(16,14,26,0.92);}
+}
 
-h2.section-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2rem,4.5vw,3rem);
-  margin-bottom:14px;
+/* Borda luminosa: um fio de luz que corre no canto superior esquerdo,
+   como a quina de uma placa de vidro pegando luz. */
+@supports ((-webkit-mask-composite:xor) or (mask-composite:exclude)){
+  .hero-panel::before, .card::before, .comp::before, .case::before,
+  .stat::before, .destaque-card::before, .thumb-card::before, nav::before{
+    content:""; position:absolute; inset:0; border-radius:inherit;
+    padding:1px; pointer-events:none;
+    background:linear-gradient(135deg,
+      rgba(255,255,255,0.45), rgba(255,255,255,0.04) 38%,
+      rgba(255,255,255,0) 62%, rgba(255,255,255,0.20));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+  }
 }
+
+/* Texto irisado. Fora do @supports o texto continua dourado e legível. */
+.iris-text, .hero h1 .gold{color:var(--gold);}
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .iris-text, .hero h1 .gold{
+    background-image:linear-gradient(100deg,
+      var(--iris-1), var(--iris-2) 38%, var(--iris-3) 72%, var(--iris-1));
+    background-size:260% 100%;
+    background-position:var(--iris-shift) 0;
+    -webkit-background-clip:text; background-clip:text;
+    color:transparent;
+  }
+}
+
 .eyebrow{
   font-family:'Space Mono',monospace;
-  font-size:11px;
-  letter-spacing:0.16em;
-  text-transform:uppercase;
-  color:var(--accent);
-  margin-bottom:12px;
-  display:block;
+  font-size:11px; letter-spacing:0.18em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:14px; display:block;
 }
 .lede{color:var(--muted); max-width:60ch; margin-bottom:48px;}
 
-/* NAV */
-header{
-  position:sticky; top:0; z-index:50;
-  background:rgba(11,10,9,0.85);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
+h2.section-title{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(1.9rem,4vw,2.7rem); letter-spacing:-0.02em;
+  margin-bottom:14px; position:relative; padding-bottom:18px;
 }
-nav{
-  max-width:var(--maxw); margin:0 auto; padding:18px 24px;
-  display:flex; align-items:center; justify-content:space-between; gap:20px;
+h2.section-title::after{
+  content:""; position:absolute; left:0; bottom:0;
+  height:1px; width:100%;
+  background:linear-gradient(90deg, var(--iris-2), var(--iris-1) 45%, transparent 85%);
+  transform:scaleX(0); transform-origin:left;
+  transition:transform 0.9s cubic-bezier(0.22,1,0.36,1);
 }
-.logo{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.03em; z-index:52;}
-.nav-links{display:flex; gap:28px; font-size:14px; color:var(--muted);}
-.nav-links a:hover{color:var(--text);}
-.nav-cta{
-  border:1px solid var(--accent);
-  color:var(--accent);
-  padding:9px 18px;
-  border-radius:100px;
-  font-size:13px;
-  font-weight:600;
-  white-space:nowrap;
+h2.section-title.line-in::after{transform:scaleX(1);}
+@media (prefers-reduced-motion: reduce){
+  h2.section-title::after{transition:none; transform:scaleX(1);}
 }
-.nav-cta:hover{background:var(--accent); color:#0B0A09;}
 
-/* HAMBURGER BUTTON */
+/* ===== NAV FLUTUANTE ===== */
+header{position:sticky; top:0; z-index:50; padding:16px 24px;}
+nav{
+  max-width:var(--maxw); margin:0 auto; padding:12px 12px 12px 24px;
+  display:flex; align-items:center; justify-content:space-between; gap:20px;
+  border-radius:100px;
+  box-shadow:0 12px 40px -18px rgba(0,0,0,0.9);
+}
+.logo{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:1.02rem; letter-spacing:0.02em; white-space:nowrap; z-index:52;
+}
+.nav-links{display:flex; gap:24px; font-size:13.5px; color:var(--muted);}
+.nav-links a{transition:color 0.2s;}
+.nav-links a:hover{color:var(--text);}
+.nav-links a.active{color:var(--accent);}
+.nav-cta{
+  background:linear-gradient(100deg, #5EEAD4, #22D3EE 45%, #A78BFA);
+  color:var(--ink); padding:10px 20px; border-radius:100px;
+  font-size:13px; font-weight:600; white-space:nowrap;
+  box-shadow:0 6px 22px -8px rgba(34,211,238,0.75);
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.nav-cta:hover{transform:translateY(-1px); box-shadow:0 10px 28px -8px rgba(34,211,238,0.95);}
+
 .hamburger{
-  display:none;
-  width:44px; height:44px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:var(--panel);
-  cursor:pointer;
-  position:relative;
-  z-index:52;
-  flex-shrink:0;
-  transition:border-color 0.2s;
+  display:none; width:44px; height:44px; border-radius:14px;
+  cursor:pointer; z-index:52; flex-shrink:0; transition:border-color 0.2s;
 }
 .hamburger:hover{border-color:var(--accent);}
 .hamburger span{
-  display:block;
-  width:18px; height:2px;
-  background:var(--text);
-  position:absolute;
-  left:50%; top:50%;
-  transform:translate(-50%,-50%);
+  display:block; width:18px; height:1.5px; background:var(--text);
+  position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
   transition:transform 0.25s ease, opacity 0.2s ease;
 }
 .hamburger span:nth-child(1){transform:translate(-50%, calc(-50% - 6px));}
 .hamburger span:nth-child(3){transform:translate(-50%, calc(-50% + 6px));}
-.hamburger[aria-expanded="true"] span:nth-child(1){
-  transform:translate(-50%,-50%) rotate(45deg);
-}
-.hamburger[aria-expanded="true"] span:nth-child(2){
-  opacity:0;
-}
-.hamburger[aria-expanded="true"] span:nth-child(3){
-  transform:translate(-50%,-50%) rotate(-45deg);
+.hamburger[aria-expanded="true"] span:nth-child(1){transform:translate(-50%,-50%) rotate(45deg);}
+.hamburger[aria-expanded="true"] span:nth-child(2){opacity:0;}
+.hamburger[aria-expanded="true"] span:nth-child(3){transform:translate(-50%,-50%) rotate(-45deg);}
+
+@media(max-width:860px){
+  .nav-links, .nav-cta{display:none;}
+  .hamburger{display:block;}
+  nav{padding:10px 10px 10px 22px;}
 }
 
-/* MOBILE MENU OVERLAY */
+/* ===== MENU MOBILE ===== */
 .mobile-menu{
   position:fixed; inset:0; z-index:51;
-  background:rgba(11,10,9,0.97);
-  backdrop-filter:blur(16px);
-  display:flex; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:8px;
-  opacity:0; visibility:hidden;
-  transition:opacity 0.3s ease, visibility 0.3s ease;
-  padding:80px 24px 40px;
+  background:rgba(7,6,12,0.93);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; opacity:0; visibility:hidden;
+  transition:opacity 0.32s ease, visibility 0.32s ease;
+  padding:96px 24px 40px;
 }
 .mobile-menu.open{
   opacity:1; visibility:visible;
+  background:rgba(7,6,12,0.72);
+  -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px);
 }
 .mobile-menu a{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.6rem,6vw,2.2rem);
-  letter-spacing:0.03em;
-  color:var(--muted);
-  padding:10px 20px;
-  transition:color 0.2s;
+  font-family:'Space Grotesk',sans-serif; font-weight:500;
+  font-size:clamp(1.35rem,5vw,1.8rem); letter-spacing:-0.01em;
+  color:var(--muted); padding:9px 20px; transition:color 0.2s;
 }
-.mobile-menu a:hover,
-.mobile-menu a:focus-visible{color:var(--text);}
+.mobile-menu a:hover, .mobile-menu a:focus-visible{color:var(--text);}
 .mobile-menu .nav-cta-mobile{
-  margin-top:24px;
-  border:1px solid var(--accent);
-  color:var(--accent);
-  padding:14px 32px;
-  border-radius:100px;
-  font-family:'Inter',sans-serif;
-  font-size:15px;
-  font-weight:600;
-  letter-spacing:0;
-}
-.mobile-menu .nav-cta-mobile:hover{
-  background:var(--accent); color:#0B0A09;
+  margin-top:26px;
+  background:linear-gradient(100deg, #5EEAD4, #22D3EE 45%, #A78BFA);
+  color:var(--ink); padding:14px 34px; border-radius:100px;
+  font-family:'Inter',sans-serif; font-size:15px; font-weight:600;
+  box-shadow:0 8px 26px -8px rgba(34,211,238,0.8);
 }
 
-@media(max-width:760px){
-  .nav-links{display:none;}
-  .nav-cta{display:none;}
-  .hamburger{display:block;}
-}
-
-/* HERO — FULL-BLEED */
+/* ===== HERO ===== */
 .hero{
-  position:relative;
-  min-height:min(92vh, 820px);
-  display:flex; align-items:flex-end;
-  padding:0 0 88px;
-  overflow:hidden;
-  text-align:left;
+  position:relative; min-height:min(94vh, 860px);
+  display:flex; align-items:center; padding:120px 0 96px;
+  overflow:hidden; text-align:left;
 }
 .hero-bg{
   position:absolute; inset:0; z-index:0;
-  width:100%; height:100%; object-fit:cover;
-  object-position:center 28%;
-  filter:saturate(1.05) contrast(1.08) brightness(0.78) sepia(0.08);
+  width:100%; height:100%; object-fit:cover; object-position:center 28%;
+  filter:saturate(0.75) contrast(1.06) brightness(0.42) hue-rotate(-12deg);
 }
-.hero::before{
-  content:"";
+/* Veu que resfria a foto e a funde no fundo escuro */
+.hero-veil{
   position:absolute; inset:0; z-index:1;
   background:
-    linear-gradient(180deg, rgba(11,10,9,0.55) 0%, rgba(11,10,9,0.35) 32%, rgba(11,10,9,0.55) 62%, rgba(11,10,9,0.96) 100%),
-    linear-gradient(90deg, rgba(11,10,9,0.75) 0%, rgba(11,10,9,0.15) 55%, transparent 85%);
+    radial-gradient(ellipse at 22% 42%, rgba(139,92,246,0.32), transparent 58%),
+    radial-gradient(ellipse at 82% 30%, rgba(34,211,238,0.22), transparent 55%),
+    linear-gradient(180deg, rgba(7,6,12,0.72) 0%, rgba(7,6,12,0.50) 40%, rgba(7,6,12,0.94) 100%);
 }
-.hero::after{
-  content:"";
-  position:absolute; inset:0; z-index:1;
-  box-shadow: inset 0 0 160px rgba(0,0,0,0.65);
+.hero-content{position:relative; z-index:2; width:100%;}
+.hero-panel{
+  max-width:760px; padding:44px 46px 40px;
+  border-radius:26px;
+  box-shadow:0 40px 90px -40px rgba(0,0,0,0.95), 0 0 70px -30px rgba(139,92,246,0.5);
 }
-.hero-content{position:relative; z-index:2;}
-@media(max-width:760px){
-  .hero{min-height:min(88vh, 680px); padding-bottom:56px;}
-  .hero-bg{object-position:center 20%;}
+.status-pill{
+  display:inline-flex; align-items:center; gap:9px;
+  padding:6px 15px; border-radius:100px; margin-bottom:24px;
+  font-family:'Space Mono',monospace; font-size:11px;
+  letter-spacing:0.1em; text-transform:uppercase; color:var(--muted);
 }
-.hero h1{font-size:clamp(2.6rem,6.5vw,4.6rem); line-height:1.02; max-width:14ch;}
-/* Classe explicita: a animacao palavra-por-palavra embrulha cada palavra em
-   <span>, entao um seletor de descendente pintaria o titulo inteiro de dourado. */
-.hero h1 .gold{color:var(--gold);}
-.hero .sub{margin-top:20px; color:var(--muted); max-width:56ch; font-size:1.05rem;}
-.hero .cta-row{margin-top:36px; display:flex; gap:16px; flex-wrap:wrap;}
-.btn-primary{
-  background:var(--accent); color:#0B0A09; padding:14px 26px;
-  border-radius:8px; font-weight:600; font-size:14px;
+.status-pill .dot{
+  width:6px; height:6px; border-radius:50%; background:var(--accent);
+  box-shadow:0 0 10px 2px rgba(34,211,238,0.85);
+  animation:pulse 2s ease-in-out infinite;
 }
-.btn-secondary{
-  border:1px solid var(--line); color:var(--text); padding:14px 26px;
-  border-radius:8px; font-weight:600; font-size:14px;
-}
-.btn-primary:hover{opacity:0.88;}
-.btn-secondary:hover{border-color:var(--accent);}
+@keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.35; transform:scale(0.8);}}
 
-/* OBJETIVO */
-.objetivo{border-top:1px solid var(--line);}
-.objetivo-grid{
-  display:grid; grid-template-columns:1.3fr 0.7fr; gap:56px; align-items:center;
+.hero h1{
+  font-size:clamp(2.1rem,5.2vw,3.7rem); line-height:1.08;
+  letter-spacing:-0.03em; max-width:16ch;
 }
-.objetivo-text p{color:#CFC7B6; max-width:72ch; font-size:1.02rem;}
+.hero .sub{margin-top:22px; color:var(--muted); max-width:54ch; font-size:1.02rem;}
+.hero .cta-row{margin-top:34px; display:flex; gap:14px; flex-wrap:wrap;}
+
+.hero-specs{
+  display:flex; flex-wrap:wrap; gap:28px;
+  margin-top:36px; padding-top:26px;
+  border-top:1px solid var(--glass-line-soft);
+}
+.hero-specs div{display:flex; flex-direction:column; gap:2px;}
+.hero-specs dt{
+  font-family:'Space Mono',monospace; font-size:10px;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--muted);
+}
+.hero-specs dd{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.25rem;}
+
+@media(max-width:860px){
+  .hero{min-height:auto; padding:104px 0 72px;}
+  .hero-panel{padding:32px 26px 30px; border-radius:22px;}
+  .hero-bg{object-position:center 20%;}
+  .hero-specs{gap:20px;}
+}
+
+/* ===== BOTOES ===== */
+.btn-primary, .btn-secondary{
+  padding:14px 28px; border-radius:100px;
+  font-weight:600; font-size:14px; display:inline-block;
+  transition:transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.btn-primary{
+  background:linear-gradient(100deg, #5EEAD4, #22D3EE 45%, #A78BFA);
+  color:var(--ink);
+  box-shadow:0 10px 30px -10px rgba(34,211,238,0.8);
+}
+.btn-primary:hover{transform:translateY(-2px); box-shadow:0 16px 38px -10px rgba(34,211,238,1);}
+.btn-secondary{color:var(--text);}
+.btn-secondary:hover{border-color:var(--accent); transform:translateY(-2px);}
+
+/* ===== OBJETIVO ===== */
+.objetivo-grid{display:grid; grid-template-columns:1.3fr 0.7fr; gap:56px; align-items:center;}
+.objetivo-text p{color:#C6C0D8; max-width:72ch; font-size:1.02rem;}
 .objetivo-text p + p{margin-top:16px;}
 .objetivo-photo{
-  position:relative;
-  border-radius:14px;
-  overflow:hidden;
-  aspect-ratio:4/5;
+  position:relative; border-radius:22px; overflow:hidden; aspect-ratio:4/5;
+  border:1px solid var(--glass-line);
+  box-shadow:0 30px 70px -34px rgba(139,92,246,0.75);
 }
-.objetivo-photo img{
-  width:100%; height:100%; object-fit:cover;
-  filter:grayscale(12%) contrast(1.05);
-}
+.objetivo-photo img{width:100%; height:100%; object-fit:cover; filter:saturate(0.92) contrast(1.04);}
 .objetivo-photo::after{
-  content:"";
-  position:absolute; inset:0;
-  background:linear-gradient(180deg, transparent 60%, rgba(11,10,9,0.35) 100%);
-  box-shadow: inset 0 0 60px rgba(0,0,0,0.35);
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(160deg, rgba(34,211,238,0.16), transparent 45%, rgba(139,92,246,0.24));
 }
 @media(max-width:860px){
   .objetivo-grid{grid-template-columns:1fr; gap:32px;}
-  .objetivo-photo{order:-1; max-width:340px; margin:0 auto;}
+  .objetivo-photo{order:-1; max-width:320px; margin:0 auto;}
 }
 
-/* CARDS - por que */
-.card-grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
-.card{background:var(--panel); padding:32px 28px;}
-.card .num{font-family:'Space Mono',monospace; color:var(--gold); font-size:12px; display:block; margin-bottom:14px;}
-.card h3{font-family:'Bebas Neue',sans-serif; font-size:1.4rem; margin-bottom:10px; letter-spacing:0.02em;}
+/* ===== GRADES DE CARTOES ===== */
+.card-grid-3{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px;}
+.card{padding:30px 28px; transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;}
+.card:hover{transform:translateY(-4px); border-color:rgba(34,211,238,0.4); box-shadow:0 22px 50px -26px rgba(34,211,238,0.6);}
+.card .num{font-family:'Space Mono',monospace; color:var(--gold); font-size:12px; display:block; margin-bottom:16px;}
+.card h3{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.15rem; margin-bottom:10px; letter-spacing:-0.01em;}
 .card p{color:var(--muted); font-size:0.94rem;}
 
-/* COMPETENCIAS */
-.comp-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:24px;}
-.comp{border:1px solid var(--line); border-radius:12px; padding:28px; background:var(--panel);}
-.comp h3{font-family:'Bebas Neue',sans-serif; font-size:1.3rem; margin-bottom:10px;}
+.comp-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px;}
+.comp{padding:28px; transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;}
+.comp:hover{transform:translateY(-4px); border-color:rgba(139,92,246,0.45); box-shadow:0 22px 50px -26px rgba(139,92,246,0.6);}
+.comp h3{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.1rem; margin-bottom:10px; letter-spacing:-0.01em;}
 .comp p{color:var(--muted); font-size:0.92rem;}
 
-/* FERRAMENTAS */
-.tools-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line);}
-.tool{background:var(--panel); padding:26px 24px;}
-.tool h4{font-size:1rem; margin-bottom:6px; font-weight:600;}
+.tools-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px;}
+.tool{padding:24px; transition:border-color 0.3s ease, background 0.3s ease;}
+.tool:hover{border-color:rgba(34,211,238,0.35); background:var(--glass-2);}
+.tool h4{font-size:0.98rem; margin-bottom:6px; font-weight:600;}
 .tool p{color:var(--muted); font-size:0.88rem;}
 
 .software-grid{
-  margin-top:32px;
-  display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
-  gap:16px;
+  margin-top:32px; display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(122px,1fr)); gap:14px;
 }
 .soft-badge{
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-  border:1px solid var(--line); border-radius:12px;
-  padding:22px 12px; background:var(--panel);
-  text-align:center;
+  display:flex; flex-direction:column; align-items:center; gap:11px;
+  padding:22px 12px; text-align:center;
+  transition:transform 0.3s ease, border-color 0.3s ease;
 }
-.soft-icon{
-  width:44px; height:44px; color:var(--gold);
-  border-radius:10px; overflow:hidden;
-}
+.soft-badge:hover{transform:translateY(-3px); border-color:rgba(34,211,238,0.4);}
+.soft-icon{width:44px; height:44px; border-radius:12px; overflow:hidden;}
 .soft-icon img{width:100%; height:100%; object-fit:contain;}
-.soft-name{font-size:12px; color:var(--muted); font-family:'Space Mono',monospace;}
+.soft-name{font-size:11px; color:var(--muted); font-family:'Space Mono',monospace;}
+.soft-icon.invert img{filter:invert(1);}
 
-/* Inverte ícones de fundo escuro para ficarem visíveis */
-.soft-icon.invert img{
-  filter: invert(1);
-}
-
-/* CASES */
-.cases{display:flex; flex-direction:column; border-top:1px solid var(--line);}
+/* ===== CASES ===== */
+.cases{display:flex; flex-direction:column; gap:12px;}
 .case{
-  display:flex; align-items:center; gap:24px;
-  padding:28px 0; border-bottom:1px solid var(--line);
+  display:flex; align-items:center; gap:22px; padding:22px 26px; border-radius:16px;
+  transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.case:hover{
+  transform:translateY(-3px);
+  border-color:rgba(34,211,238,0.4);
+  box-shadow:0 22px 55px -28px rgba(34,211,238,0.65);
 }
 .case-avatar{
-  width:64px; height:64px; border-radius:50%;
-  overflow:hidden; flex-shrink:0; border:1px solid var(--line);
-  background:var(--panel2);
+  width:60px; height:60px; border-radius:50%; overflow:hidden; flex-shrink:0;
+  border:1px solid var(--glass-line); background:var(--bg-2);
+  transition:transform 0.3s ease, box-shadow 0.3s ease;
 }
 .case-avatar img{width:100%; height:100%; object-fit:cover;}
-.case-content{
-  display:grid; grid-template-columns:1fr 90px 2fr;
-  gap:20px; align-items:baseline; flex:1;
-}
-.case-content h3{font-family:'Bebas Neue',sans-serif; font-size:1.6rem;}
-.case-content .tag{font-family:'Space Mono',monospace; font-size:11px; color:var(--gold); text-transform:uppercase;}
-.case-content p{color:var(--muted); font-size:0.92rem;}
-/* Cases sem avatar ocupam a linha inteira */
+.case:hover .case-avatar{transform:scale(1.06); box-shadow:0 0 0 2px rgba(34,211,238,0.55);}
+.case-content{display:grid; grid-template-columns:1fr 100px 2fr; gap:20px; align-items:baseline; flex:1;}
 .case-content.full{grid-column:1/-1;}
+.case-content h3{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:1.2rem; letter-spacing:-0.01em;}
+.case-content .tag{font-family:'Space Mono',monospace; font-size:10.5px; color:var(--gold); text-transform:uppercase;}
+.case-content p{color:var(--muted); font-size:0.92rem;}
 @media(max-width:680px){
-  .case{align-items:flex-start;}
+  .case{align-items:flex-start; padding:20px;}
   .case-content{grid-template-columns:1fr; gap:8px;}
 }
 
-/* STATS STRIP */
-.stats-strip{
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
-  gap:1px; background:var(--line); border:1px solid var(--line); margin-top:40px;
+/* ===== STATS ===== */
+.stats-strip{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:14px; margin-top:40px;}
+.stat{padding:26px 20px; text-align:center;}
+.stat .n{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:1.9rem; display:block; letter-spacing:-0.02em;
 }
-.stat{background:var(--panel2); padding:26px 20px; text-align:center;}
-.stat .n{font-family:'Space Mono',monospace; color:var(--gold); font-size:1.7rem; display:block;}
-.stat .l{color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:0.08em; margin-top:6px;}
+.stat .l{color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; margin-top:6px; display:block;}
 
+/* ===== CARROSSEIS ===== */
 .carousel-wrap{position:relative; display:flex; align-items:center; gap:12px;}
 .carousel{
   display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth;
-  padding-bottom:8px; scrollbar-width:none;
-  scroll-snap-type:x mandatory;
+  padding:4px 4px 10px; scrollbar-width:none; scroll-snap-type:x mandatory;
 }
 .carousel::-webkit-scrollbar{display:none;}
 .carousel > *{scroll-snap-align:start;}
 .car-slot{
-  flex:0 0 auto; width:220px; height:280px;
-  border:1px dashed var(--line); border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
+  flex:0 0 auto; width:220px; height:280px; border-radius:16px;
+  display:flex; align-items:center; justify-content:center; overflow:hidden;
   color:var(--muted); font-family:'Space Mono',monospace; font-size:12px;
-  background:var(--panel);
+  transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.car-slot img{width:100%; height:100%; object-fit:cover; border-radius:9px;}
+.car-slot:hover{
+  transform:translateY(-4px);
+  border-color:rgba(34,211,238,0.45);
+  box-shadow:0 22px 50px -26px rgba(34,211,238,0.7);
+}
+.car-slot img{width:100%; height:100%; object-fit:cover; border-radius:15px; cursor:pointer; display:block;}
 #carousel .car-slot{width:340px; height:200px;}
-#carousel .car-slot img{cursor:pointer;}
-#carousel-fotos .car-slot img{cursor:pointer;}
+.car-btn{
+  flex:0 0 auto; width:42px; height:42px; border-radius:50%;
+  color:var(--text); font-size:1.3rem; cursor:pointer; line-height:1;
+  transition:border-color 0.2s, color 0.2s, transform 0.2s;
+}
+.car-btn:hover{border-color:var(--accent); color:var(--accent); transform:scale(1.08);}
 
+/* ===== VIDEOS ===== */
 .video-carousel{align-items:stretch;}
 .video-slot{
-  flex:0 0 auto; width:320px;
-  aspect-ratio:16/9;
-  border:1px dashed var(--line); border-radius:10px;
-  background:var(--panel);
+  flex:0 0 auto; width:330px; aspect-ratio:16/9; border-radius:16px;
   display:flex; align-items:center; justify-content:center;
   color:var(--muted); font-family:'Space Mono',monospace; font-size:12px;
-  overflow:hidden; position:relative;
+  overflow:hidden; cursor:pointer; padding:0;
+  transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.video-slot iframe{
-  width:100%; height:100%; border:0;
+.video-slot:hover{
+  transform:translateY(-4px);
+  border-color:rgba(139,92,246,0.5);
+  box-shadow:0 22px 55px -26px rgba(139,92,246,0.75);
 }
-/* Facade de thumbnail do YouTube até o clique - evita carregar 10 iframes de uma vez */
-.video-slot{cursor:pointer; padding:0; border-style:solid;}
+.video-slot iframe{width:100%; height:100%; border:0;}
 /* Enquanto o iframe toca, os eventos de mouse ficam presos dentro dele: o
    cursor "PLAY" congelaria numa posicao antiga, entao ele e desativado. */
 .video-slot.is-playing{cursor:default;}
@@ -423,145 +508,90 @@ nav{
   display:flex; align-items:center; justify-content:center;
 }
 .yt-facade::before{
-  content:"";
-  position:absolute; inset:0;
-  background:rgba(11,10,9,0.28);
-  transition:background 0.2s ease;
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(160deg, rgba(139,92,246,0.28), rgba(7,6,12,0.42));
+  transition:background 0.25s ease;
 }
-.video-slot:hover .yt-facade::before{background:rgba(11,10,9,0.45);}
+.video-slot:hover .yt-facade::before{background:linear-gradient(160deg, rgba(139,92,246,0.12), rgba(7,6,12,0.22));}
 .yt-play-btn{
-  position:relative; z-index:1;
-  width:56px; height:56px; border-radius:50%;
-  background:var(--accent); color:#0B0A09;
+  position:relative; z-index:1; width:54px; height:54px; border-radius:50%;
+  background:linear-gradient(100deg, #5EEAD4, #22D3EE 50%, #A78BFA);
   display:flex; align-items:center; justify-content:center;
-  font-size:0; box-shadow:0 4px 18px rgba(0,0,0,0.4);
+  font-size:0; box-shadow:0 6px 24px rgba(34,211,238,0.55);
+  transition:transform 0.25s ease;
 }
+.video-slot:hover .yt-play-btn{transform:scale(1.1);}
 .yt-play-btn::after{
-  content:"";
-  border-style:solid; border-width:9px 0 9px 15px;
-  border-color:transparent transparent transparent #0B0A09;
-  margin-left:4px;
+  content:""; border-style:solid; border-width:8px 0 8px 14px;
+  border-color:transparent transparent transparent var(--ink); margin-left:4px;
 }
-@media(max-width:600px){
-  .video-slot{width:82vw;}
-}
+@media(max-width:600px){ .video-slot{width:82vw;} }
 
-.lightbox{
-  position:fixed; inset:0; z-index:100;
-  background:rgba(11,10,9,0.92);
-  display:none; align-items:center; justify-content:center;
-  padding:24px;
+/* ===== THUMBDESIGNER ===== */
+.thumb-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:18px;}
+.thumb-card{
+  overflow:hidden; cursor:pointer; padding:0;
+  transition:transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
-.lightbox.open{display:flex;}
-.lightbox img{
-  max-width:92vw; max-height:88vh;
-  object-fit:contain; border-radius:6px;
+.thumb-card:hover{
+  transform:translateY(-5px);
+  border-color:rgba(240,168,104,0.5);
+  box-shadow:0 26px 60px -28px rgba(240,168,104,0.7);
 }
-.lightbox-close{
-  position:absolute; top:20px; right:24px;
-  width:40px; height:40px; border-radius:50%;
-  border:1px solid var(--line); background:var(--panel);
-  color:var(--text); font-size:1.4rem; cursor:pointer; line-height:1;
-}
-@media(max-width:600px){
-  .lightbox-close{top:14px; right:14px;}
-}
-.car-btn{
-  flex:0 0 auto; width:40px; height:40px; border-radius:50%;
-  border:1px solid var(--line); background:var(--panel);
-  color:var(--text); font-size:1.3rem; cursor:pointer; line-height:1;
-}
-.car-btn:hover{border-color:var(--accent); color:var(--accent);}
+.thumb-card img{width:100%; height:auto; display:block; border-radius:calc(var(--r) - 1px);}
 
-.destaque{
-  border-top:1px solid var(--line);
-  text-align:center;
-  background:radial-gradient(ellipse at 50% 0%, rgba(217,104,43,0.10), transparent 65%);
-}
+/* ===== DESTAQUE ===== */
+.destaque{text-align:center;}
 .badge-flash{
   display:inline-flex; align-items:center; gap:8px;
-  border:1px solid var(--accent); color:var(--accent);
+  border:1px solid rgba(34,211,238,0.45); color:var(--accent);
   padding:7px 18px; border-radius:100px;
-  font-size:11px; letter-spacing:0.14em;
+  font-size:11px; letter-spacing:0.16em;
+  box-shadow:0 0 30px -10px rgba(34,211,238,0.8);
 }
 .destaque-grid{
   display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:1px; background:var(--line); border:1px solid var(--line);
-  max-width:640px; margin:44px auto 0;
+  gap:14px; max-width:640px; margin:44px auto 0;
 }
-.destaque-card{
-  background:var(--panel2); padding:36px 24px;
-  display:flex; flex-direction:column; align-items:center; gap:10px;
-}
-.d-num{font-size:2.6rem; color:var(--accent);}
+.destaque-card{padding:36px 24px; display:flex; flex-direction:column; align-items:center; gap:10px;}
+.d-num{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:2.4rem; letter-spacing:-0.02em;}
 .d-label{color:var(--muted); font-size:0.9rem; max-width:22ch;}
 
-/* CONTATO */
-.contato{
-  text-align:center; border-top:1px solid var(--line);
-  background:radial-gradient(ellipse at 50% 0%, rgba(217,104,43,0.08), transparent 60%);
+/* ===== CONTATO ===== */
+.contato{text-align:center;}
+.contato h2{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:clamp(2rem,4.6vw,3.1rem); letter-spacing:-0.03em; margin-bottom:18px;
 }
-.contato h2{font-family:'Bebas Neue',sans-serif; font-size:clamp(2.2rem,5vw,3.4rem); margin-bottom:18px;}
 .contato p{color:var(--muted); max-width:50ch; margin:0 auto 36px;}
-.contato .cta-row{display:flex; gap:16px; justify-content:center; flex-wrap:wrap;}
+.contato .cta-row{display:flex; gap:14px; justify-content:center; flex-wrap:wrap;}
 
-footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; color:var(--muted); font-size:12px;}
-
-/* ========== THUMBDESIGNER ========== */
-.thumb-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
-  gap:20px;
-}
-.thumb-card{
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid var(--line);
-  background:var(--panel);
-  transition:transform 0.25s ease, border-color 0.25s ease;
-  cursor:pointer;
-}
-.thumb-card:hover{
-  transform:translateY(-4px);
-  border-color:var(--accent);
-}
-.thumb-card img{
-  width:100%;
-  height:auto;
-  display:block;
+footer{
+  border-top:1px solid var(--glass-line-soft);
+  padding:32px 24px; text-align:center; color:var(--muted); font-size:12px;
+  position:relative; z-index:1;
 }
 
-/* Reveal-on-scroll (respeita prefers-reduced-motion).
-   O estado escondido so vale quando ha JS para revela-lo de novo — por isso
-   depende de .js no <html>. Sem JS o conteudo aparece normalmente. */
-.js .reveal{opacity:0; transform:translateY(18px); transition:opacity 0.6s ease, transform 0.6s ease;}
-.js .reveal.in-view{opacity:1; transform:translateY(0);}
-@media (prefers-reduced-motion: reduce){
-  .js .reveal{opacity:1; transform:none; transition:none;}
+/* ===== CAMADAS DE ATMOSFERA ===== */
+/* Grao fino, estatico e sem mix-blend-mode. Aqui ele nao esta imitando filme —
+   serve para quebrar o banding dos degrades grandes da aurora. Animado e com
+   blend, custava um terco da taxa de quadros da rolagem. */
+.grain{
+  position:fixed; inset:0; z-index:64; pointer-events:none;
+  opacity:0.028;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* VINHETA GERAL */
-.vignette{
-  position:fixed; inset:0; z-index:59; pointer-events:none;
-  box-shadow: inset 0 0 180px rgba(0,0,0,0.55);
-}
-
-/* SCROLL PROGRESS BAR */
 .scroll-progress{
   position:fixed; top:0; left:0; height:2px; width:0%;
-  background:linear-gradient(90deg, var(--accent), var(--gold));
-  z-index:80;
-  transition:width 0.1s linear;
+  background:linear-gradient(90deg, var(--iris-2), var(--iris-1) 50%, var(--iris-3));
+  z-index:80; transition:width 0.1s linear;
+  box-shadow:0 0 12px rgba(34,211,238,0.8);
 }
 
-/* NAV LINK ATIVO */
-.nav-links a.active{color:var(--accent);}
-
-/* BOTÃO VOLTAR AO TOPO */
 .back-to-top{
   position:fixed; right:20px; bottom:20px; z-index:55;
   width:46px; height:46px; border-radius:50%;
-  background:var(--panel); border:1px solid var(--line);
   color:var(--text); display:flex; align-items:center; justify-content:center;
   cursor:pointer; font-size:1.1rem;
   opacity:0; visibility:hidden; transform:translateY(10px);
@@ -570,99 +600,33 @@ footer{border-top:1px solid var(--line); padding:32px 24px; text-align:center; c
 .back-to-top.show{opacity:1; visibility:visible; transform:translateY(0);}
 .back-to-top:hover{border-color:var(--accent); color:var(--accent);}
 
-/* CASES - HOVER PREMIUM */
-.case{transition:background 0.25s ease, box-shadow 0.25s ease;}
-.case:hover{
-  background:rgba(217,104,43,0.04);
-  box-shadow: inset 3px 0 0 var(--accent);
+/* ===== LIGHTBOX ===== */
+.lightbox{
+  position:fixed; inset:0; z-index:100;
+  background:rgba(7,6,12,0.86);
+  -webkit-backdrop-filter:blur(24px); backdrop-filter:blur(24px);
+  display:none; align-items:center; justify-content:center; padding:24px;
 }
-.case-avatar{transition:transform 0.3s ease, box-shadow 0.3s ease;}
-.case:hover .case-avatar{
-  transform:scale(1.06);
-  box-shadow:0 0 0 2px rgba(201,162,75,0.5);
+.lightbox.open{display:flex;}
+.lightbox img{
+  max-width:92vw; max-height:88vh; object-fit:contain; border-radius:14px;
+  border:1px solid var(--glass-line);
+  box-shadow:0 40px 100px -30px rgba(0,0,0,0.95), 0 0 80px -30px rgba(139,92,246,0.6);
 }
+.lightbox-close{
+  position:absolute; top:20px; right:24px;
+  width:42px; height:42px; border-radius:50%;
+  color:var(--text); font-size:1.4rem; cursor:pointer; line-height:1;
+}
+.lightbox-close:hover{border-color:var(--accent); color:var(--accent);}
+@media(max-width:600px){ .lightbox-close{top:14px; right:14px;} }
 
-/* ===== CURSOR CUSTOMIZADO (site inteiro) =====
-   O cursor nativo so e escondido depois que o JS confirma que o substituto
-   esta ativo (classe .custom-cursor no body). Sem isso, uma falha de JS ou um
-   redimensionamento de janela deixaria a pagina sem cursor nenhum. */
-body.custom-cursor,
-body.custom-cursor a,
-body.custom-cursor button,
-body.custom-cursor .thumb-card,
-body.custom-cursor .case,
-body.custom-cursor [role="button"]{cursor:none;}
-.cursor-dot{
-  position:fixed; z-index:90; pointer-events:none;
-  width:8px; height:8px; border-radius:50%;
-  background:var(--accent);
-  transform:translate(-50%,-50%);
-  opacity:0; transition:opacity 0.2s ease, width 0.2s ease, height 0.2s ease, background 0.2s ease;
-}
-.cursor-ring{
-  position:fixed; z-index:90; pointer-events:none;
-  width:34px; height:34px; border-radius:50%;
-  border:1px solid rgba(217,104,43,0.55);
-  transform:translate(-50%,-50%);
-  opacity:0; transition:opacity 0.2s ease, width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
-}
-.cursor-dot.show, .cursor-ring.show{opacity:1;}
-.cursor-ring.hover{width:50px; height:50px; border-color:var(--gold);}
-@media(max-width:900px){
-  .cursor-dot, .cursor-ring{display:none;}
-}
-@media (prefers-reduced-motion: reduce){
-  .cursor-dot, .cursor-ring{display:none;}
-  body{cursor:auto;}
-}
+.shutter-flash{position:fixed; inset:0; z-index:110; pointer-events:none; background:#fff; opacity:0;}
+.shutter-flash.flash{animation:shutter-pop 0.35s ease-out;}
+@keyframes shutter-pop{0%{opacity:0;} 15%{opacity:0.8;} 100%{opacity:0;}}
+@media (prefers-reduced-motion: reduce){ .shutter-flash.flash{animation:none;} }
 
-/* ===== HERO — REVELAÇÃO PALAVRA POR PALAVRA ===== */
-.word-reveal{display:inline-block; overflow:hidden; vertical-align:top;}
-.word-reveal span{
-  display:inline-block;
-  transform:translateY(110%);
-  animation:word-up 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
-}
-@keyframes word-up{
-  to{transform:translateY(0);}
-}
-@media (prefers-reduced-motion: reduce){
-  .word-reveal span{animation:none; transform:none;}
-}
-
-/* ===== LINHA ANIMADA SOB OS TÍTULOS DE SEÇÃO ===== */
-h2.section-title{position:relative; padding-bottom:16px;}
-h2.section-title::after{
-  content:"";
-  position:absolute; left:0; bottom:0;
-  height:2px; width:100%;
-  background:linear-gradient(90deg, var(--accent), var(--gold));
-  transform:scaleX(0); transform-origin:left;
-  transition:transform 0.8s cubic-bezier(0.22,1,0.36,1);
-}
-h2.section-title.line-in::after{transform:scaleX(1);}
-@media (prefers-reduced-motion: reduce){
-  h2.section-title::after{transition:none; transform:scaleX(1);}
-}
-
-/* ===== FLASH DE OBTURADOR (lightbox) ===== */
-.shutter-flash{
-  position:fixed; inset:0; z-index:110; pointer-events:none;
-  background:#fff; opacity:0;
-}
-.shutter-flash.flash{
-  animation:shutter-pop 0.35s ease-out;
-}
-@keyframes shutter-pop{
-  0%{opacity:0;}
-  15%{opacity:0.85;}
-  100%{opacity:0;}
-}
-@media (prefers-reduced-motion: reduce){
-  .shutter-flash.flash{animation:none;}
-}
-
-/* ===== MODO CINEMA (vídeos) =====
+/* ===== MODO CINEMA =====
    z-index acima do header (50) e do menu (51), senao o cabecalho continuaria
    aceso por cima do escurecimento. */
 .cinema-overlay{
@@ -670,13 +634,85 @@ h2.section-title.line-in::after{transform:scaleX(1);}
   background:rgba(0,0,0,0); pointer-events:none;
   transition:background 0.4s ease;
 }
-.cinema-overlay.active{background:rgba(0,0,0,0.78); pointer-events:auto;}
+.cinema-overlay.active{background:rgba(7,6,12,0.86); pointer-events:auto;}
 .video-slot.cinema-active{position:relative; z-index:62;}
+
+/* ===== CURSOR CUSTOMIZADO =====
+   O cursor nativo so e escondido depois que o JS confirma que o substituto
+   esta ativo (classe .custom-cursor no body). Sem isso, uma falha de JS ou um
+   redimensionamento de janela deixaria a pagina sem cursor nenhum. */
+body.custom-cursor,
+body.custom-cursor a, body.custom-cursor button,
+body.custom-cursor .thumb-card, body.custom-cursor .case,
+body.custom-cursor [role="button"]{cursor:none;}
+/* A opacidade troca sem transicao de proposito: o ponto precisa estar visivel
+   no mesmo instante em que o cursor nativo some, senao sobra um piscar sem
+   cursor nenhum. As transicoes de tamanho, do estado :hover, ficam. */
+.cursor-dot{
+  position:fixed; z-index:90; pointer-events:none;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 12px 2px rgba(34,211,238,0.9);
+  transform:translate(-50%,-50%); opacity:0;
+  transition:width 0.2s ease, height 0.2s ease;
+}
+.cursor-ring{
+  position:fixed; z-index:90; pointer-events:none;
+  width:34px; height:34px; border-radius:50%;
+  border:1px solid rgba(34,211,238,0.6);
+  transform:translate(-50%,-50%); opacity:0;
+  transition:width 0.2s ease, height 0.2s ease, border-color 0.2s ease;
+}
+.cursor-dot.show, .cursor-ring.show{opacity:1;}
+.cursor-ring.hover{width:52px; height:52px; border-color:var(--iris-1);}
+@media(max-width:900px){ .cursor-dot, .cursor-ring{display:none;} }
+@media (prefers-reduced-motion: reduce){
+  .cursor-dot, .cursor-ring{display:none;}
+  body{cursor:auto;}
+}
+
+/* ===== CURSOR "PLAY" SOBRE OS VIDEOS ===== */
+.play-cursor{
+  position:fixed; z-index:70; pointer-events:none;
+  width:62px; height:62px; border-radius:50%;
+  background:linear-gradient(100deg, #5EEAD4, #22D3EE 50%, #A78BFA);
+  color:var(--ink);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Mono',monospace; font-size:10px; letter-spacing:0.08em;
+  transform:translate(-50%,-50%) scale(0);
+  transition:transform 0.18s ease;
+  box-shadow:0 8px 30px rgba(34,211,238,0.6);
+}
+.play-cursor.show{transform:translate(-50%,-50%) scale(1);}
+@media(max-width:900px){ .play-cursor{display:none;} }
+
+/* ===== REVELACAO AO ROLAR =====
+   O estado escondido so vale quando ha JS para revela-lo de novo — por isso
+   depende de .js no <html>. Sem JS o conteudo aparece normalmente. */
+.js .reveal{opacity:0; transform:translateY(20px); transition:opacity 0.7s ease, transform 0.7s ease;}
+.js .reveal.in-view{opacity:1; transform:translateY(0);}
+@media (prefers-reduced-motion: reduce){
+  .js .reveal{opacity:1; transform:none; transition:none;}
+}
+
+/* ===== HERO: REVELACAO PALAVRA POR PALAVRA ===== */
+.word-reveal{display:inline-block; overflow:hidden; vertical-align:top;}
+.word-reveal span{
+  display:inline-block; transform:translateY(110%);
+  animation:word-up 0.8s cubic-bezier(0.22,1,0.36,1) forwards;
+}
+@keyframes word-up{to{transform:translateY(0);}}
+@media (prefers-reduced-motion: reduce){
+  .word-reveal span{animation:none; transform:none;}
+}
 </style>
 </head>
 <body>
+<div class="aurora" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
 <div class="grain"></div>
-<div class="vignette"></div>
 <div class="scroll-progress" id="scrollProgress"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 <div class="cursor-dot" id="cursorDot"></div>
@@ -726,12 +762,21 @@ h2.section-title.line-in::after{transform:scaleX(1);}
 
 <section class="hero" id="top">
   <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
+  <div class="hero-veil" aria-hidden="true"></div>
   <div class="wrap hero-content">
-    <h1 class="display">Zorieuq Miranda <span class="gold">Videomaker e Fotógrafo</span></h1>
-    <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
-    <div class="cta-row">
-      <a href="#contato" class="btn-primary">Vamos trabalhar juntos</a>
-      <a href="#objetivo" class="btn-secondary">Conheça minha trajetória</a>
+    <div class="hero-panel">
+      <span class="status-pill"><span class="dot" aria-hidden="true"></span>Disponível para projetos</span>
+      <h1 class="display">Zorieuq Miranda <span class="gold">Videomaker e Fotógrafo</span></h1>
+      <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
+      <div class="cta-row">
+        <a href="#contato" class="btn-primary">Vamos trabalhar juntos</a>
+        <a href="#objetivo" class="btn-secondary">Conheça minha trajetória</a>
+      </div>
+      <dl class="hero-specs">
+        <div><dt>Visualizações</dt><dd>1M+</dd></div>
+        <div><dt>Curtidas</dt><dd>100K+</dd></div>
+        <div><dt>Atuando desde</dt><dd>2019</dd></div>
+      </dl>
     </div>
   </div>
 </section>
@@ -1302,6 +1347,11 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     const pct = docHeight > 0 ? (window.scrollY / docHeight) * 100 : 0;
     scrollProgress.style.width = pct + '%';
     backToTop.classList.toggle('show', window.scrollY > 600);
+    // Desloca o gradiente irisado conforme a página desce: o dourado do título
+    // e as bordas de vidro mudam de matiz ao longo da rolagem.
+    if(!reduceMotion){
+      document.documentElement.style.setProperty('--iris-shift', (pct * 1.6).toFixed(1) + '%');
+    }
     tickAgendado = false;
   }
   window.addEventListener('scroll', () => {
@@ -1365,31 +1415,39 @@ h2.section-title.line-in::after{transform:scaleX(1);}
   const cursorDot = document.getElementById('cursorDot');
   const cursorRing = document.getElementById('cursorRing');
   const telaGrande = window.matchMedia('(min-width:901px)');
-  let cursorLigado = false;
+  let cursorPronto = false, cursorVisivel = false;
+
+  // O cursor nativo so some no instante em que o substituto aparece na tela, e
+  // volta assim que ele some. Assim nunca existe um momento com cursor:none e
+  // nenhum ponto visivel — nem no primeiro carregamento, nem apos redimensionar.
+  function mostrarCursor(){
+    if(cursorVisivel) return;
+    cursorVisivel = true;
+    cursorDot.classList.add('show');
+    cursorRing.classList.add('show');
+    document.body.classList.add('custom-cursor');
+  }
+  function esconderCursor(){
+    cursorVisivel = false;
+    cursorDot.classList.remove('show');
+    cursorRing.classList.remove('show');
+    document.body.classList.remove('custom-cursor');
+  }
 
   function ligarCursor(){
-    if(cursorLigado || reduceMotion || !telaGrande.matches || !cursorDot || !cursorRing) return;
-    cursorLigado = true;
-    // Só agora o cursor nativo some — o substituto já está garantido.
-    document.body.classList.add('custom-cursor');
+    if(cursorPronto || reduceMotion || !telaGrande.matches || !cursorDot || !cursorRing) return;
+    cursorPronto = true;
 
-    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0, visivel = false;
+    let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
 
     document.addEventListener('mousemove', (e) => {
+      if(!telaGrande.matches) return;
       mouseX = e.clientX; mouseY = e.clientY;
       cursorDot.style.left = mouseX + 'px';
       cursorDot.style.top = mouseY + 'px';
-      if(!visivel){
-        cursorDot.classList.add('show');
-        cursorRing.classList.add('show');
-        visivel = true;
-      }
+      mostrarCursor();
     });
-    document.addEventListener('mouseleave', () => {
-      cursorDot.classList.remove('show');
-      cursorRing.classList.remove('show');
-      visivel = false;
-    });
+    document.addEventListener('mouseleave', esconderCursor);
     (function animateRing(){
       ringX += (mouseX - ringX) * 0.18;
       ringY += (mouseY - ringY) * 0.18;
@@ -1408,19 +1466,12 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     });
   }
 
-  function desligarCursor(){
-    if(!cursorLigado) return;
-    document.body.classList.remove('custom-cursor');
-    cursorDot.classList.remove('show');
-    cursorRing.classList.remove('show');
-  }
-
   ligarCursor();
   // Ao redimensionar de tela estreita para larga o cursor precisa ser (re)ativado,
   // senão a página ficaria sem cursor nenhum.
   telaGrande.addEventListener('change', (e) => {
-    if(e.matches){ cursorLigado ? document.body.classList.add('custom-cursor') : ligarCursor(); }
-    else desligarCursor();
+    if(e.matches) ligarCursor();
+    else esconderCursor();
   });
 
   // ========== HERO — REVELAÇÃO PALAVRA POR PALAVRA ==========
@@ -1438,8 +1489,11 @@ h2.section-title.line-in::after{transform:scaleX(1);}
     trechos.forEach(trecho => {
       trecho.texto.trim().split(/\s+/).forEach(palavra => {
         const wrap = document.createElement('span');
-        wrap.className = 'word-reveal' + (trecho.gold ? ' gold' : '');
+        wrap.className = 'word-reveal';
         const inner = document.createElement('span');
+        // A classe vai no span interno, que é quem contém o texto de fato:
+        // background-clip:text só recorta o gradiente no elemento que tem o texto.
+        if(trecho.gold) inner.className = 'gold';
         inner.textContent = palavra;
         inner.style.animationDelay = (0.1 + i * 0.06) + 's';
         wrap.appendChild(inner);
