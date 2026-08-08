@@ -127,7 +127,7 @@ section{padding:104px 0; position:relative; z-index:1;}
 /* ===== SUPERFICIES DE VIDRO =====
    .surface     -> translúcido simples (barato, para elementos repetidos)
    .surface-fx  -> + desfoque real do fundo (caro, reservado aos paineis maiores) */
-nav, .hero-panel, .card, .comp, .tool, .case, .stat, .destaque-card,
+nav, .card, .comp, .tool, .case, .stat, .destaque-card,
 .soft-badge, .car-slot, .video-slot, .thumb-card, .status-pill,
 .btn-secondary, .car-btn, .lightbox-close, .back-to-top, .hamburger{
   background:var(--glass);
@@ -161,7 +161,7 @@ nav{background:rgba(20,18,16,0.88);}
 /* Borda luminosa: um fio de luz que corre no canto superior esquerdo,
    como a quina de uma placa de vidro pegando luz. */
 @supports ((-webkit-mask-composite:xor) or (mask-composite:exclude)){
-  .hero-panel::before, .card::before, .comp::before, .case::before,
+  .card::before, .comp::before, .case::before,
   .stat::before, .destaque-card::before, .thumb-card::before, nav::before{
     content:""; position:absolute; inset:0; border-radius:inherit;
     padding:1px; pointer-events:none;
@@ -295,21 +295,61 @@ nav{
 .hero-bg{
   position:absolute; inset:0; z-index:0;
   width:100%; height:100%; object-fit:cover; object-position:center 28%;
-  filter:saturate(1.0) contrast(1.07) brightness(0.44) sepia(0.14);
+  filter:saturate(1.05) contrast(1.04) brightness(0.66) sepia(0.10);
 }
-/* Veu que resfria a foto e a funde no fundo escuro */
+/* Veu leve: da o tom quente e funde a base da foto no fundo escuro da pagina,
+   sem apagar o predio. */
 .hero-veil{
   position:absolute; inset:0; z-index:1;
   background:
-    radial-gradient(ellipse at 22% 42%, rgba(201,162,75,0.32), transparent 58%),
-    radial-gradient(ellipse at 82% 30%, rgba(217,104,43,0.22), transparent 55%),
-    linear-gradient(180deg, rgba(10,8,7,0.72) 0%, rgba(10,8,7,0.50) 40%, rgba(10,8,7,0.94) 100%);
+    radial-gradient(ellipse at 24% 40%, rgba(201,162,75,0.20), transparent 60%),
+    radial-gradient(ellipse at 82% 30%, rgba(217,104,43,0.14), transparent 58%),
+    linear-gradient(180deg, rgba(10,8,7,0.34) 0%, rgba(10,8,7,0.10) 38%, rgba(10,8,7,0.62) 82%, rgba(10,8,7,0.96) 100%);
 }
-.hero-content{position:relative; z-index:2; width:100%;}
-.hero-panel{
-  max-width:760px; padding:44px 46px 40px;
-  border-radius:26px;
-  box-shadow:0 40px 90px -40px rgba(0,0,0,0.95), 0 0 70px -30px rgba(201,162,75,0.5);
+
+/* A lamina de vidro sobre a home inteira */
+.hero-glass{
+  position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(158deg,
+    rgba(255,255,255,0.085), rgba(255,255,255,0.018) 48%, rgba(255,255,255,0.055));
+}
+/* Escurecimento graduado so do lado do texto — como um filtro ND degrade.
+   Mantem o contraste da leitura e deixa o teatro limpo do outro lado. */
+.hero-glass::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(102deg,
+    rgba(10,8,7,0.76) 0%, rgba(10,8,7,0.66) 33%,
+    rgba(10,8,7,0.28) 60%, rgba(10,8,7,0) 82%);
+}
+/* Fio de luz nas bordas: a quina da placa de vidro pegando luz */
+.hero-glass::before{
+  content:""; position:absolute; inset:0; z-index:1;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    inset 0 -1px 0 rgba(255,255,255,0.07),
+    inset 1px 0 0 rgba(255,255,255,0.09),
+    inset -1px 0 0 rgba(255,255,255,0.09);
+}
+.hero-content{position:relative; z-index:3; width:100%;}
+/* Sem fundo proprio: o vidro agora e a tela toda, nao um cartao */
+.hero-panel{max-width:640px;}
+
+/* O texto do hero agora repousa sobre a foto, e contraste sobre imagem varia
+   pixel a pixel. Sombra suave + cores mais claras resolvem a leitura sem
+   escurecer a lamina — que e justamente o que deixaria o teatro invisivel. */
+.hero-content{text-shadow:0 1px 2px rgba(10,8,7,0.60), 0 2px 18px rgba(10,8,7,0.80);}
+.hero .cta-row a{text-shadow:none;}
+/* O subtitulo e o unico texto pequeno do hero (16px exige 4,5:1 contra os
+   1,5:1 do titulo grande), entao leva sombra mais firme e cor cheia. */
+.hero .sub{
+  color:#EFEAE1;
+  text-shadow:0 1px 2px rgba(10,8,7,0.88), 0 2px 12px rgba(10,8,7,0.96), 0 0 26px rgba(10,8,7,0.80);
+}
+.hero-specs dt{color:rgba(239,234,225,0.80);}
+.hero .status-pill{
+  color:rgba(239,234,225,0.94);
+  background:rgba(10,8,7,0.62);
+  border-color:rgba(255,255,255,0.22);
 }
 .status-pill{
   display:inline-flex; align-items:center; gap:9px;
@@ -345,8 +385,14 @@ nav{
 
 @media(max-width:860px){
   .hero{min-height:auto; padding:104px 0 72px;}
-  .hero-panel{padding:32px 26px 30px; border-radius:22px;}
   .hero-bg{object-position:center 20%;}
+  /* No celular o texto ocupa a largura toda, entao o degrade escurece de baixo
+     para cima em vez de da esquerda para a direita. */
+  .hero-glass::after{
+    background:linear-gradient(188deg,
+      rgba(10,8,7,0.14) 0%, rgba(10,8,7,0.30) 22%, rgba(10,8,7,0.56) 46%,
+      rgba(10,8,7,0.78) 72%, rgba(10,8,7,0.90) 100%);
+  }
   .hero-specs{gap:20px;}
 }
 
@@ -763,6 +809,7 @@ body.custom-cursor [role="button"]{cursor:none;}
 <section class="hero" id="top">
   <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
   <div class="hero-veil" aria-hidden="true"></div>
+  <div class="hero-glass" aria-hidden="true"></div>
   <div class="wrap hero-content">
     <div class="hero-panel">
       <span class="status-pill"><span class="dot" aria-hidden="true"></span>Disponível para projetos</span>
