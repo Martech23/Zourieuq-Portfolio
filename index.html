@@ -466,12 +466,34 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
 @media(max-width:860px){
   .hero{min-height:auto; padding:104px 0 72px;}
   .hero-bg{object-position:center 20%;}
-  /* No celular o texto ocupa a largura toda, entao o degrade escurece de baixo
-     para cima em vez de da esquerda para a direita. */
-  .hero-glass::after{
-    background:linear-gradient(188deg,
-      rgba(10,8,7,0.14) 0%, rgba(10,8,7,0.30) 22%, rgba(10,8,7,0.56) 46%,
-      rgba(10,8,7,0.78) 72%, rgba(10,8,7,0.90) 100%);
+  /* No celular a lamina vira uma lente circular — como o vidro de uma objetiva
+     sobre a foto — em vez do retangulo que se formava em volta do texto.
+     O desfoque estava no .hero-panel (a caixa do texto), e era isso que criava
+     a borda reta visivel; agora ele vem para ca, recortado em circulo com
+     borda suave. */
+  .hero-panel{-webkit-backdrop-filter:none; backdrop-filter:none;}
+  .hero-glass{
+    background:linear-gradient(158deg,
+      rgba(255,255,255,0.035), rgba(255,255,255,0.008) 48%, rgba(255,255,255,0.022));
+    -webkit-backdrop-filter:blur(11px) saturate(112%);
+            backdrop-filter:blur(11px) saturate(112%);
+    -webkit-mask-image:radial-gradient(circle at 50% 40%, #000 0 40%, rgba(0,0,0,0) 64%);
+            mask-image:radial-gradient(circle at 50% 40%, #000 0 40%, rgba(0,0,0,0) 64%);
+  }
+  /* O fio de luz das bordas nao faz sentido numa forma circular sem quinas */
+  .hero-glass::before{display:none;}
+  /* O escurecimento que garante a leitura muda de camada: ficando na lamina,
+     seria recortado pela mascara junto com o desfoque. */
+  .hero-glass::after{display:none;}
+  .hero-veil{
+    background:
+      radial-gradient(ellipse at 24% 40%, rgba(201,162,75,0.20), transparent 60%),
+      radial-gradient(ellipse at 82% 30%, rgba(217,104,43,0.14), transparent 58%),
+      linear-gradient(188deg,
+        rgba(10,8,7,0.18) 0%, rgba(10,8,7,0.46) 22%, rgba(10,8,7,0.68) 46%,
+        rgba(10,8,7,0.84) 72%, rgba(10,8,7,0.92) 100%),
+      linear-gradient(180deg, rgba(10,8,7,0.34) 0%, rgba(10,8,7,0.10) 38%,
+        rgba(10,8,7,0.62) 82%, rgba(10,8,7,0.96) 100%);
   }
   .hero-specs{gap:20px;}
 }
