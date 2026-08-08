@@ -1,0 +1,4 @@
+# Bytecode do Python: regerado toda vez que os scripts dos skills rodam,
+# entao sujaria o diff a cada uso.
+__pycache__/
+*.pyc
