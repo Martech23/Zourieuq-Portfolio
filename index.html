@@ -297,6 +297,13 @@ nav{
   transition:opacity 0.32s ease, visibility 0.32s ease;
   padding:96px 24px 40px;
 }
+/* Enquanto o menu esta aberto o header sobe acima do overlay. Sem isto o
+   hamburguer — que ja vira um X — ficava atras da camada do menu: o X era
+   desenhado mas invisivel, e o toque nao chegava no botao. No celular isso
+   deixava a pessoa presa no menu, porque so dava para sair clicando num link
+   (Escape nao existe no touch). */
+body.menu-open header{z-index:52;}
+body.menu-open nav{background:rgba(20,18,16,0.72);}
 .mobile-menu.open{
   opacity:1; visibility:visible;
   background:rgba(10,8,7,0.72);
@@ -1250,7 +1257,10 @@ body.custom-cursor [role="button"]{cursor:none;}
     hamburger.setAttribute('aria-label', 'Fechar menu');
     mobileMenu.classList.add('open');
     document.body.classList.add('menu-open');
-    menuItems[0].focus();
+    // O foco fica no proprio botao, que agora e o X visivel: Enter fecha na
+    // hora e Tab entra na lista de links. (Focar o primeiro link aqui nao
+    // funcionava — o navegador devolve o foco ao botao recem-clicado.)
+    hamburger.focus();
   }
 
   function closeMenu() {
@@ -1266,12 +1276,19 @@ body.custom-cursor [role="button"]{cursor:none;}
 
   menuItems.forEach(link => link.addEventListener('click', closeMenu));
 
-  // Prende o foco dentro do menu: sem isso a tabulação passa para os links que
-  // estão atrás do overlay, invisíveis para quem enxerga a tela.
-  mobileMenu.addEventListener('keydown', (e) => {
-    if (e.key !== 'Tab') return;
-    const primeiro = menuItems[0], ultimo = menuItems[menuItems.length - 1];
-    if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+  // Tocar no fundo do overlay tambem fecha — saida esperada em qualquer menu
+  // desse tipo, e uma segunda rota caso o X passe despercebido.
+  mobileMenu.addEventListener('click', (e) => { if (e.target === mobileMenu) closeMenu(); });
+
+  // Prende o foco no menu: sem isso a tabulação passa para os links que estão
+  // atrás do overlay, invisíveis para quem enxerga a tela. O X entra no ciclo
+  // porque agora e o controle de fechar visivel.
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Tab' || !menuAberto()) return;
+    const focaveis = [hamburger, ...menuItems];
+    const primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1];
+    if (!focaveis.includes(document.activeElement)) { e.preventDefault(); primeiro.focus(); }
+    else if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
     else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
   });
 
