@@ -394,7 +394,14 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
     inset 1px 0 0 rgba(255,255,255,0.09),
     inset -1px 0 0 rgba(255,255,255,0.09);
 }
-.hero-content{position:relative; z-index:3; width:100%;}
+/* Poeira em suspensao, em WebGL. Fica acima da lamina de vidro e abaixo do
+   texto: some por tras das palavras em vez de disputar com elas. */
+.hero-particles{
+  position:absolute; inset:0; z-index:3; pointer-events:none;
+  opacity:0; transition:opacity 1.4s ease;
+}
+.hero-particles.on{opacity:1;}
+.hero-content{position:relative; z-index:4; width:100%;}
 /* Sem fundo proprio: o vidro agora e a tela toda, nao um cartao */
 .hero-panel{max-width:640px;}
 
@@ -992,6 +999,7 @@ body.custom-cursor [role="button"]{cursor:none;}
   <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
   <div class="hero-veil" aria-hidden="true"></div>
   <div class="hero-glass" aria-hidden="true"></div>
+  <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
   <div class="wrap hero-content">
     <div class="hero-panel">
       <span class="status-pill"><span class="dot" aria-hidden="true"></span>Disponível para projetos</span>
@@ -1989,6 +1997,138 @@ body.custom-cursor [role="button"]{cursor:none;}
       concluir();
     });
   }
+
+  // ========== POEIRA EM SUSPENSÃO NO HERO (Three.js) ==========
+  // A "sujeira no facho de luz" do cinema — conversa com o Ken Burns da foto.
+  //
+  // Três decisões de custo, porque o hero ja e a parte mais pesada da pagina:
+  //   1. A biblioteca (183 KB gzipado) entra por import() dinamico, fora do
+  //      caminho critico. Quem nunca ve o hero animado nao baixa nada.
+  //   2. O loop de render para quando o hero sai da tela — sem isso ele
+  //      continuaria queimando quadros e bateria durante a pagina inteira.
+  //   3. A contagem cai no celular: o skill alerta que a proporcao de
+  //      desempenho entre GPU de desktop e de celular chega a 10:1.
+  async function poeiraHero(){
+    const canvas = document.getElementById('heroParticles');
+    if(!canvas || reduceMotion) return;
+
+    // WebGL disponivel? Testa num canvas descartavel para nao consumir o real.
+    try{
+      const teste = document.createElement('canvas');
+      if(!(teste.getContext('webgl2') || teste.getContext('webgl'))) return;
+    }catch(e){ return; }
+
+    let THREE;
+    try{ THREE = await import('./vendor/three.module.min.js'); }
+    catch(e){ return; }   // falhou o download: a pagina segue igual, sem poeira
+
+    const hero = document.querySelector('.hero');
+    const estreito = window.matchMedia('(max-width:860px)').matches;
+    // No celular a poeira e bem mais discreta: com blend aditivo numa tela
+    // pequena, as particulas se concentram e chegam a apagar o texto — medido,
+    // os rotulos caiam de 5,73 para 3,48 de contraste.
+    const N = estreito ? 550 : 2200;
+
+    const cena = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
+    camera.position.z = 18;
+
+    const render = new THREE.WebGLRenderer({canvas, alpha:true, antialias:false,
+                                            powerPreference:'low-power'});
+    render.setClearColor(0x000000, 0);
+
+    // Sprite redondo com queda suave, gerado em memoria — evita mais um arquivo
+    const c = document.createElement('canvas'); c.width = c.height = 64;
+    const g2 = c.getContext('2d');
+    const grad = g2.createRadialGradient(32,32,0,32,32,32);
+    grad.addColorStop(0,   'rgba(255,255,255,1)');
+    grad.addColorStop(0.35,'rgba(255,255,255,0.55)');
+    grad.addColorStop(1,   'rgba(255,255,255,0)');
+    g2.fillStyle = grad; g2.fillRect(0,0,64,64);
+    const sprite = new THREE.CanvasTexture(c);
+
+    const pos = new Float32Array(N*3), cor = new Float32Array(N*3), vel = new Float32Array(N);
+    const paleta = [new THREE.Color(0xC9A24B), new THREE.Color(0xD9682B), new THREE.Color(0xEBC97F)];
+    for(let i=0;i<N;i++){
+      pos[i*3]   = (Math.random()-0.5)*46;
+      pos[i*3+1] = (Math.random()-0.5)*26;
+      pos[i*3+2] = (Math.random()-0.5)*22;
+      const k = paleta[(Math.random()*paleta.length)|0];
+      const brilho = 0.45 + Math.random()*0.55;
+      cor[i*3] = k.r*brilho; cor[i*3+1] = k.g*brilho; cor[i*3+2] = k.b*brilho;
+      vel[i] = 0.12 + Math.random()*0.5;      // sobe devagar, em ritmos diferentes
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',    new THREE.BufferAttribute(cor,3));
+
+    const mat = new THREE.PointsMaterial({
+      size: estreito ? 0.22 : 0.34, map:sprite, vertexColors:true, transparent:true,
+      opacity: estreito ? 0.38 : 0.9,
+      depthWrite:false, blending:THREE.AdditiveBlending,
+      sizeAttenuation:true
+    });
+    const pontos = new THREE.Points(geo, mat);
+    cena.add(pontos);
+
+    function dimensionar(){
+      const r = hero.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, estreito ? 1.5 : 2);
+      render.setPixelRatio(dpr);
+      render.setSize(r.width, r.height, false);
+      camera.aspect = r.width / Math.max(r.height,1);
+      camera.updateProjectionMatrix();
+    }
+    dimensionar();
+    window.addEventListener('resize', dimensionar, {passive:true});
+
+    // paralaxe suave: a camera acompanha o ponteiro de longe
+    let alvoX = 0, alvoY = 0, camX = 0, camY = 0;
+    window.addEventListener('mousemove', (e)=>{
+      alvoX = (e.clientX / window.innerWidth  - 0.5) * 1.6;
+      alvoY = (e.clientY / window.innerHeight - 0.5) * 1.0;
+    }, {passive:true});
+
+    // O loop so roda com o hero na tela.
+    let visivel = true, rodando = false;
+    if('IntersectionObserver' in window){
+      new IntersectionObserver(es=>{
+        visivel = es[0].isIntersecting;
+        if(visivel && !rodando){ rodando = true; requestAnimationFrame(quadro); }
+      }, {threshold:0}).observe(hero);
+    }
+
+    const p = geo.attributes.position.array;
+    let anterior = performance.now();
+    function quadro(agora){
+      if(!visivel){ rodando = false; return; }   // dorme fora da tela
+      const dt = Math.min((agora - anterior)/1000, 0.05);
+      anterior = agora;
+      for(let i=0;i<N;i++){
+        p[i*3+1] += vel[i]*dt;
+        if(p[i*3+1] > 13) p[i*3+1] = -13;        // reentra por baixo
+      }
+      geo.attributes.position.needsUpdate = true;
+      pontos.rotation.y += dt*0.012;
+      camX += (alvoX - camX)*0.03; camY += (alvoY - camY)*0.03;
+      camera.position.x = camX; camera.position.y = -camY;
+      camera.lookAt(0,0,0);
+      render.render(cena, camera);
+      requestAnimationFrame(quadro);
+    }
+    rodando = true;
+    requestAnimationFrame(quadro);
+    requestAnimationFrame(()=>canvas.classList.add('on'));
+  }
+  // Fora do caminho critico de verdade: so comeca depois do load e de uma
+  // janela ociosa. Sem isto o import() disparava junto com o resto do script e
+  // os 183 KB (gzipados) da biblioteca entravam no carregamento inicial.
+  (function agendarPoeira(){
+    const ocioso = window.requestIdleCallback || (cb => setTimeout(cb, 300));
+    const iniciar = () => ocioso(() => poeiraHero());
+    if(document.readyState === 'complete') iniciar();
+    else window.addEventListener('load', iniciar, {once:true});
+  })();
 </script>
 
 </body>
