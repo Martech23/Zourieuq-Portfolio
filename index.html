@@ -138,7 +138,7 @@ section{padding:104px 0; position:relative; z-index:1;}
    .surface     -> translúcido simples (barato, para elementos repetidos)
    .surface-fx  -> + desfoque real do fundo (caro, reservado aos paineis maiores) */
 nav, .card, .comp, .tool, .case, .stat, .destaque-card,
-.soft-badge, .car-slot, .video-slot, .thumb-card, .status-pill,
+.soft-badge, .car-slot, .video-slot, .thumb-card,
 .btn-secondary, .car-btn, .lightbox-close, .back-to-top, .hamburger{
   background:var(--glass);
   border:1px solid var(--glass-line-soft);
@@ -394,13 +394,13 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
     inset 1px 0 0 rgba(255,255,255,0.09),
     inset -1px 0 0 rgba(255,255,255,0.09);
 }
-/* Poeira em suspensao, em WebGL. Fica acima da lamina de vidro e abaixo do
-   texto: some por tras das palavras em vez de disputar com elas. */
-.hero-particles{
-  position:absolute; inset:0; z-index:3; pointer-events:none;
+/* A foto do hero renderizada em WebGL, para poder ondular sob o cursor.
+   Fica abaixo da lamina de vidro e do texto. */
+.hero-canvas{
+  position:absolute; inset:0; z-index:0; pointer-events:none;
   opacity:0; transition:opacity 1.4s ease;
 }
-.hero-particles.on{opacity:1;}
+.hero-canvas.on{opacity:1;}
 .hero-content{position:relative; z-index:4; width:100%;}
 /* Sem fundo proprio: o vidro agora e a tela toda, nao um cartao */
 .hero-panel{max-width:640px;}
@@ -422,23 +422,7 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
   text-shadow:0 1px 2px rgba(10,8,7,0.88), 0 2px 12px rgba(10,8,7,0.96), 0 0 26px rgba(10,8,7,0.80);
 }
 .hero-specs dt{color:rgba(239,234,225,0.80);}
-.hero .status-pill{
-  color:rgba(239,234,225,0.94);
-  background:rgba(10,8,7,0.62);
-  border-color:rgba(255,255,255,0.22);
-}
-.status-pill{
-  display:inline-flex; align-items:center; gap:9px;
-  padding:6px 15px; border-radius:100px; margin-bottom:24px;
-  font-family:'Space Mono',monospace; font-size:11px;
-  letter-spacing:0.1em; text-transform:uppercase; color:var(--muted);
-}
-.status-pill .dot{
-  width:6px; height:6px; border-radius:50%; background:var(--accent);
-  box-shadow:0 0 10px 2px rgba(217,104,43,0.85);
-  animation:pulse 2s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.35; transform:scale(0.8);}}
+.hero @keyframes pulse{0%,100%{opacity:1; transform:scale(1);} 50%{opacity:0.35; transform:scale(0.8);}}
 
 .hero h1{
   font-size:clamp(2.1rem,5.2vw,3.7rem); line-height:1.08;
@@ -999,10 +983,9 @@ body.custom-cursor [role="button"]{cursor:none;}
   <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
   <div class="hero-veil" aria-hidden="true"></div>
   <div class="hero-glass" aria-hidden="true"></div>
-  <canvas class="hero-particles" id="heroParticles" aria-hidden="true"></canvas>
+  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="wrap hero-content">
     <div class="hero-panel">
-      <span class="status-pill"><span class="dot" aria-hidden="true"></span>Disponível para projetos</span>
       <h1 class="display">Zorieuq Miranda <span class="gold">Videomaker e Fotógrafo</span></h1>
       <p class="sub">Videomaker e produtor de conteúdo que combina audiovisual, design e estratégia de mídias sociais para transformar marcas e criadores em resultado real de audiência e engajamento.</p>
       <div class="cta-row">
@@ -1998,21 +1981,22 @@ body.custom-cursor [role="button"]{cursor:none;}
     });
   }
 
-  // ========== POEIRA EM SUSPENSÃO NO HERO (Three.js) ==========
-  // A "sujeira no facho de luz" do cinema — conversa com o Ken Burns da foto.
+  // ========== FOTO DO HERO COM ONDULAÇÃO (Three.js) ==========
+  // A foto do teatro passa por um shader para poder ondular sob o cursor. A
+  // <img> continua no HTML e so e escondida quando o WebGL assume: se algo aqui
+  // falhar, a foto normal com o Ken Burns em CSS permanece no lugar.
   //
-  // Três decisões de custo, porque o hero ja e a parte mais pesada da pagina:
-  //   1. A biblioteca (183 KB gzipado) entra por import() dinamico, fora do
-  //      caminho critico. Quem nunca ve o hero animado nao baixa nada.
-  //   2. O loop de render para quando o hero sai da tela — sem isso ele
-  //      continuaria queimando quadros e bateria durante a pagina inteira.
-  //   3. A contagem cai no celular: o skill alerta que a proporcao de
-  //      desempenho entre GPU de desktop e de celular chega a 10:1.
-  async function poeiraHero(){
-    const canvas = document.getElementById('heroParticles');
-    if(!canvas || reduceMotion) return;
+  // Tres decisoes de custo, porque o hero ja carrega backdrop-filter:
+  //   1. A biblioteca (183 KB gzipado) entra por import() dinamico, depois do
+  //      load e de uma janela ociosa — fora do caminho critico.
+  //   2. O loop para quando o hero sai da tela.
+  //   3. Nada disso roda com prefers-reduced-motion nem sem WebGL.
+  async function ondaHero(){
+    const canvas  = document.getElementById('heroCanvas');
+    const imgHero = document.querySelector('.hero-bg');
+    const hero    = document.querySelector('.hero');
+    if(!canvas || !imgHero || !hero || reduceMotion) return;
 
-    // WebGL disponivel? Testa num canvas descartavel para nao consumir o real.
     try{
       const teste = document.createElement('canvas');
       if(!(teste.getContext('webgl2') || teste.getContext('webgl'))) return;
@@ -2020,115 +2004,157 @@ body.custom-cursor [role="button"]{cursor:none;}
 
     let THREE;
     try{ THREE = await import('./vendor/three.module.min.js'); }
-    catch(e){ return; }   // falhou o download: a pagina segue igual, sem poeira
+    catch(e){ return; }
 
-    const hero = document.querySelector('.hero');
-    const estreito = window.matchMedia('(max-width:860px)').matches;
-    // No celular a poeira e bem mais discreta: com blend aditivo numa tela
-    // pequena, as particulas se concentram e chegam a apagar o texto — medido,
-    // os rotulos caiam de 5,73 para 3,48 de contraste.
-    const N = estreito ? 550 : 2200;
+    const render = new THREE.WebGLRenderer({canvas, antialias:false,
+                                            powerPreference:'low-power'});
+    const tex = new THREE.TextureLoader().load(
+      imgHero.currentSrc || imgHero.src,
+      () => { imgHero.style.opacity = '0'; canvas.classList.add('on'); }
+    );
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.minFilter = tex.magFilter = THREE.LinearFilter;
+
+    const uni = {
+      uTex:    {value: tex},
+      uRes:    {value: new THREE.Vector2(1,1)},
+      uTexRes: {value: new THREE.Vector2(imgHero.naturalWidth || 960,
+                                         imgHero.naturalHeight || 1280)},
+      uTime:   {value: 0},
+      uPtr:    {value: new THREE.Vector2(0.5, 0.5)},
+      uForca:  {value: 0},
+      uKen:    {value: 0}
+    };
+
+    const mat = new THREE.ShaderMaterial({
+      uniforms: uni, depthWrite:false, depthTest:false,
+      vertexShader:`
+        varying vec2 vUv;
+        void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
+      fragmentShader:`
+        precision highp float;
+        varying vec2 vUv;
+        uniform sampler2D uTex;
+        uniform vec2 uRes, uTexRes, uPtr;
+        uniform float uTime, uForca, uKen;
+
+        // O filtro do CSS opera em sRGB, mas a amostra chega em linear (e o
+        // renderer converte de volta na saida). Sem esta ida e volta,
+        // multiplicar por 0.66 em linear clareia demais: medido, os rotulos
+        // caiam de 5,74 para 2,76 de contraste.
+        vec3 paraSRGB(vec3 c){
+          return mix(12.92*c, 1.055*pow(max(c,0.0), vec3(1.0/2.4)) - 0.055,
+                     step(vec3(0.0031308), c));
+        }
+        vec3 paraLinear(vec3 c){
+          return mix(c/12.92, pow((max(c,0.0)+0.055)/1.055, vec3(2.4)),
+                     step(vec3(0.04045), c));
+        }
+
+        void main(){
+          vec2 uv = vUv;
+
+          // ondulacao: aneis suaves saindo do cursor, somem com a distancia
+          vec2 d = uv - uPtr;
+          d.x *= uRes.x / uRes.y;
+          float dist = length(d);
+          float onda = sin(dist * 17.0 - uTime * 2.2) * exp(-dist * 6.5);
+          uv += normalize(d + 1e-5) * onda * 0.007 * uForca;
+
+          // Ken Burns: mesmo percurso do CSS (1.06 -> 1.15, -1,6% e -1,4%),
+          // refeito aqui porque a foto agora passa pelo shader
+          float esc = mix(1.06, 1.15, uKen);
+          uv = (uv - 0.5) / esc + 0.5 + vec2(-0.016, -0.014) * uKen;
+
+          // enquadramento "cover". No CSS a porcentagem conta do topo; em UV o
+          // v cresce para cima, por isso 34% vira 0,66.
+          float aC = uRes.x / uRes.y, aT = uTexRes.x / uTexRes.y;
+          if (aC > aT) {
+            float meia = (aT / aC) * 0.5;
+            uv.y = (uv.y - 0.5) * (aT / aC) + (0.66 - 0.32 * meia);
+          } else {
+            uv.x = (uv.x - 0.5) * (aC / aT) + 0.5;
+          }
+
+          vec3 c = paraSRGB(texture2D(uTex, clamp(uv, 0.001, 0.999)).rgb);
+
+          // mesmo filtro que estava na <img>:
+          // saturate(1.05) contrast(1.04) brightness(0.66) sepia(0.10)
+          float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
+          c = mix(vec3(l), c, 1.05);
+          c = (c - 0.5) * 1.04 + 0.5;
+          c *= 0.66;
+          vec3 sep = vec3(dot(c, vec3(0.393,0.769,0.189)),
+                          dot(c, vec3(0.349,0.686,0.168)),
+                          dot(c, vec3(0.272,0.534,0.131)));
+          c = mix(c, sep, 0.10);
+
+          gl_FragColor = vec4(paraLinear(clamp(c, 0.0, 1.0)), 1.0);
+        }`
+    });
 
     const cena = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
-    camera.position.z = 18;
-
-    const render = new THREE.WebGLRenderer({canvas, alpha:true, antialias:false,
-                                            powerPreference:'low-power'});
-    render.setClearColor(0x000000, 0);
-
-    // Sprite redondo com queda suave, gerado em memoria — evita mais um arquivo
-    const c = document.createElement('canvas'); c.width = c.height = 64;
-    const g2 = c.getContext('2d');
-    const grad = g2.createRadialGradient(32,32,0,32,32,32);
-    grad.addColorStop(0,   'rgba(255,255,255,1)');
-    grad.addColorStop(0.35,'rgba(255,255,255,0.55)');
-    grad.addColorStop(1,   'rgba(255,255,255,0)');
-    g2.fillStyle = grad; g2.fillRect(0,0,64,64);
-    const sprite = new THREE.CanvasTexture(c);
-
-    const pos = new Float32Array(N*3), cor = new Float32Array(N*3), vel = new Float32Array(N);
-    const paleta = [new THREE.Color(0xC9A24B), new THREE.Color(0xD9682B), new THREE.Color(0xEBC97F)];
-    for(let i=0;i<N;i++){
-      pos[i*3]   = (Math.random()-0.5)*46;
-      pos[i*3+1] = (Math.random()-0.5)*26;
-      pos[i*3+2] = (Math.random()-0.5)*22;
-      const k = paleta[(Math.random()*paleta.length)|0];
-      const brilho = 0.45 + Math.random()*0.55;
-      cor[i*3] = k.r*brilho; cor[i*3+1] = k.g*brilho; cor[i*3+2] = k.b*brilho;
-      vel[i] = 0.12 + Math.random()*0.5;      // sobe devagar, em ritmos diferentes
-    }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(pos,3));
-    geo.setAttribute('color',    new THREE.BufferAttribute(cor,3));
-
-    const mat = new THREE.PointsMaterial({
-      size: estreito ? 0.22 : 0.34, map:sprite, vertexColors:true, transparent:true,
-      opacity: estreito ? 0.38 : 0.9,
-      depthWrite:false, blending:THREE.AdditiveBlending,
-      sizeAttenuation:true
-    });
-    const pontos = new THREE.Points(geo, mat);
-    cena.add(pontos);
+    cena.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat));
+    const cam = new THREE.Camera();
 
     function dimensionar(){
       const r = hero.getBoundingClientRect();
-      const dpr = Math.min(window.devicePixelRatio || 1, estreito ? 1.5 : 2);
-      render.setPixelRatio(dpr);
+      // O shader roda por pixel: em 2x sao ~3,7 milhoes de pixels por quadro.
+      // A foto e escurecida e fica sob a lamina de vidro, entao 1.4x nao se
+      // distingue de 2x aqui e custa metade.
+      render.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.4));
       render.setSize(r.width, r.height, false);
-      camera.aspect = r.width / Math.max(r.height,1);
-      camera.updateProjectionMatrix();
+      uni.uRes.value.set(r.width, r.height);
     }
     dimensionar();
     window.addEventListener('resize', dimensionar, {passive:true});
 
-    // paralaxe suave: a camera acompanha o ponteiro de longe
-    let alvoX = 0, alvoY = 0, camX = 0, camY = 0;
-    window.addEventListener('mousemove', (e)=>{
-      alvoX = (e.clientX / window.innerWidth  - 0.5) * 1.6;
-      alvoY = (e.clientY / window.innerHeight - 0.5) * 1.0;
+    function apontar(x, y){
+      const r = hero.getBoundingClientRect();
+      uni.uPtr.value.set((x - r.left)/r.width, 1.0 - (y - r.top)/r.height);
+      uni.uForca.value = 1.0;                  // decai sozinha no loop
+    }
+    window.addEventListener('mousemove', e => apontar(e.clientX, e.clientY), {passive:true});
+    window.addEventListener('touchmove', e => {
+      if(e.touches[0]) apontar(e.touches[0].clientX, e.touches[0].clientY);
     }, {passive:true});
 
-    // O loop so roda com o hero na tela.
     let visivel = true, rodando = false;
     if('IntersectionObserver' in window){
-      new IntersectionObserver(es=>{
+      new IntersectionObserver(es => {
         visivel = es[0].isIntersecting;
         if(visivel && !rodando){ rodando = true; requestAnimationFrame(quadro); }
       }, {threshold:0}).observe(hero);
     }
 
-    const p = geo.attributes.position.array;
-    let anterior = performance.now();
+    let anterior = performance.now(), desdeUltimo = 0;
     function quadro(agora){
-      if(!visivel){ rodando = false; return; }   // dorme fora da tela
+      if(!visivel){ rodando = false; return; }
       const dt = Math.min((agora - anterior)/1000, 0.05);
       anterior = agora;
-      for(let i=0;i<N;i++){
-        p[i*3+1] += vel[i]*dt;
-        if(p[i*3+1] > 13) p[i*3+1] = -13;        // reentra por baixo
+      uni.uTime.value += dt;
+      uni.uForca.value *= Math.pow(0.28, dt);          // a onda some em ~1s
+      uni.uKen.value = 0.5 - 0.5*Math.cos((uni.uTime.value/30)*Math.PI*2);
+      // Taxa cheia enquanto a onda esta viva, para o toque responder na hora.
+      // Parado, o Ken Burns leva 30s de ponta a ponta — 30 fps nao se percebe
+      // e economiza metade dos quadros.
+      desdeUltimo += dt;
+      if(uni.uForca.value > 0.02 || desdeUltimo >= 1/30){
+        render.render(cena, cam);
+        desdeUltimo = 0;
       }
-      geo.attributes.position.needsUpdate = true;
-      pontos.rotation.y += dt*0.012;
-      camX += (alvoX - camX)*0.03; camY += (alvoY - camY)*0.03;
-      camera.position.x = camX; camera.position.y = -camY;
-      camera.lookAt(0,0,0);
-      render.render(cena, camera);
       requestAnimationFrame(quadro);
     }
     rodando = true;
     requestAnimationFrame(quadro);
-    requestAnimationFrame(()=>canvas.classList.add('on'));
   }
-  // Fora do caminho critico de verdade: so comeca depois do load e de uma
-  // janela ociosa. Sem isto o import() disparava junto com o resto do script e
-  // os 183 KB (gzipados) da biblioteca entravam no carregamento inicial.
-  (function agendarPoeira(){
+  (function agendarOnda(){
     const ocioso = window.requestIdleCallback || (cb => setTimeout(cb, 300));
-    const iniciar = () => ocioso(() => poeiraHero());
+    const iniciar = () => ocioso(() => ondaHero());
     if(document.readyState === 'complete') iniciar();
     else window.addEventListener('load', iniciar, {once:true});
   })();
+
 </script>
 
 </body>
