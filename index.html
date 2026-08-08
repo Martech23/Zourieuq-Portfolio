@@ -163,9 +163,11 @@ nav{background:rgba(20,18,16,0.88);}
 .soft-badge, .car-slot, .video-slot, .thumb-card{
   background:linear-gradient(155deg, rgba(255,255,255,0.10), rgba(255,255,255,0.038) 62%);
 }
-/* Sem suporte a backdrop-filter o texto ficaria sobre a aurora crua. */
+/* Sem suporte a backdrop-filter o texto ficaria sobre a aurora crua. So no
+   desktop: no celular a leitura vem do veu, que nao depende de desfoque, e um
+   fundo solido aqui traria de volta o retangulo que acabamos de tirar. */
 @supports not ((backdrop-filter:blur(4px)) or (-webkit-backdrop-filter:blur(4px))){
-  .hero-panel{background:rgba(20,18,16,0.92);}
+  @media(min-width:861px){ .hero-panel{background:rgba(20,18,16,0.92);} }
 }
 
 /* Borda luminosa: um fio de luz que corre no canto superior esquerdo,
@@ -457,25 +459,12 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
 @media(max-width:860px){
   .hero{min-height:auto; padding:104px 0 72px;}
   .hero-bg{object-position:center 20%;}
-  /* No celular a lamina vira uma lente circular — como o vidro de uma objetiva
-     sobre a foto — em vez do retangulo que se formava em volta do texto.
-     O desfoque estava no .hero-panel (a caixa do texto), e era isso que criava
-     a borda reta visivel; agora ele vem para ca, recortado em circulo com
-     borda suave. */
+  /* Sem vidro no celular: o hero e a foto do teatro e o texto sobre ela.
+     A lamina inteira sai — o tom, o fio de luz das bordas e o desfoque.
+     Nenhum backdrop-filter sobra aqui: era o do .hero-panel que desenhava o
+     retangulo em volta do texto, e o da lamina que embacava a foto. */
   .hero-panel{-webkit-backdrop-filter:none; backdrop-filter:none;}
-  .hero-glass{
-    background:linear-gradient(158deg,
-      rgba(255,255,255,0.035), rgba(255,255,255,0.008) 48%, rgba(255,255,255,0.022));
-    -webkit-backdrop-filter:blur(11px) saturate(112%);
-            backdrop-filter:blur(11px) saturate(112%);
-    -webkit-mask-image:radial-gradient(circle at 50% 40%, #000 0 40%, rgba(0,0,0,0) 64%);
-            mask-image:radial-gradient(circle at 50% 40%, #000 0 40%, rgba(0,0,0,0) 64%);
-  }
-  /* O fio de luz das bordas nao faz sentido numa forma circular sem quinas */
-  .hero-glass::before{display:none;}
-  /* O escurecimento que garante a leitura muda de camada: ficando na lamina,
-     seria recortado pela mascara junto com o desfoque. */
-  .hero-glass::after{display:none;}
+  .hero-glass{display:none;}
   .hero-veil{
     background:
       radial-gradient(ellipse at 24% 40%, rgba(201,162,75,0.20), transparent 60%),
