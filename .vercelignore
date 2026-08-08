@@ -1,0 +1,3 @@
+# Ferramentas de desenvolvimento — não fazem parte do site publicado.
+# Sem isto, os 2,7 MB de skills seriam enviados a cada deploy sem necessidade.
+.claude/
