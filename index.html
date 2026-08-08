@@ -339,6 +339,11 @@ nav{
    escurecer a lamina — que e justamente o que deixaria o teatro invisivel. */
 .hero-content{text-shadow:0 1px 2px rgba(10,8,7,0.60), 0 2px 18px rgba(10,8,7,0.80);}
 .hero .cta-row a{text-shadow:none;}
+/* No texto com background-clip:text o gradiente e o *fundo* do elemento, e o
+   text-shadow pertence a camada do texto — que e pintada depois. A sombra
+   caia POR CIMA do laranja e o escurecia ~40% (#D9682B virava #824821).
+   Sem ela o laranja da marca volta a aparecer como e. */
+.hero h1 .gold{text-shadow:none;}
 /* O subtitulo e o unico texto pequeno do hero (16px exige 4,5:1 contra os
    1,5:1 do titulo grande), entao leva sombra mais firme e cor cheia. */
 .hero .sub{
