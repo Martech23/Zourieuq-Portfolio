@@ -792,6 +792,86 @@ body.custom-cursor [role="button"]{cursor:none;}
 @media (prefers-reduced-motion: reduce){
   .word-reveal span{animation:none; transform:none;}
 }
+
+/* ===== POP-UP DE SAIDA =====
+   Aparece uma vez por visitante quando ha sinal de que a pessoa vai embora.
+   No desktop o sinal e o mouse saindo pelo topo da janela (em direcao a aba ou
+   ao X do navegador). No celular nao existe esse gesto, entao o sinal e uma
+   rolagem rapida para cima depois de a pessoa ja ter descido a pagina. */
+.exit-modal{
+  position:fixed; inset:0; z-index:120;
+  background:rgba(10,8,7,0.84);
+  display:none; align-items:center; justify-content:center; padding:22px;
+}
+.exit-modal.open{
+  display:flex;
+  -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px);
+}
+.exit-card{
+  position:relative; width:min(460px,100%);
+  max-height:92vh; overflow-y:auto;
+  padding:34px 32px 26px; border-radius:24px;
+  background:linear-gradient(155deg, rgba(255,255,255,0.10), rgba(255,255,255,0.035) 62%), rgba(19,16,14,0.94);
+  border:1px solid var(--glass-line);
+  box-shadow:0 40px 100px -40px rgba(0,0,0,0.95), 0 0 80px -34px rgba(217,104,43,0.55);
+}
+.exit-card h2{
+  font-family:'Space Grotesk',sans-serif; font-weight:700;
+  font-size:1.5rem; line-height:1.15; letter-spacing:-0.02em; margin-bottom:10px;
+}
+.exit-intro{color:var(--muted); font-size:0.94rem; margin-bottom:24px;}
+.exit-close{
+  position:absolute; top:14px; right:14px;
+  width:36px; height:36px; border-radius:50%;
+  background:var(--glass); border:1px solid var(--glass-line-soft);
+  color:var(--text); font-size:1.25rem; line-height:1; cursor:pointer;
+  transition:border-color 0.2s, color 0.2s;
+}
+.exit-close:hover{border-color:var(--accent); color:var(--accent);}
+
+.exit-campo{display:block; margin-bottom:14px;}
+.exit-campo span{
+  display:block; font-family:'Space Mono',monospace; font-size:10px;
+  letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin-bottom:6px;
+}
+.exit-campo input{
+  width:100%; padding:12px 14px; border-radius:12px;
+  background:rgba(0,0,0,0.35); border:1px solid var(--glass-line-soft);
+  color:var(--text); font-family:'Inter',sans-serif; font-size:15px;
+  transition:border-color 0.2s, background 0.2s;
+}
+.exit-campo input::placeholder{color:rgba(239,234,225,0.32);}
+.exit-campo input:focus{outline:none; border-color:var(--accent); background:rgba(0,0,0,0.5);}
+.exit-campo input[aria-invalid="true"]{border-color:#E4593C;}
+.exit-opcional{text-transform:none; letter-spacing:0; font-family:'Inter',sans-serif; font-size:11px; opacity:0.7;}
+
+.exit-erro{
+  color:#F08A6E; font-size:0.85rem; margin:2px 0 12px; min-height:1.2em;
+}
+.exit-modal .btn-primary{width:100%; text-align:center; border:0; cursor:pointer; font-family:'Inter',sans-serif;}
+.exit-alt{
+  display:block; width:100%; margin-top:12px; padding:10px;
+  background:none; border:0; cursor:pointer;
+  color:var(--muted); font-family:'Inter',sans-serif; font-size:13px;
+  text-decoration:underline; text-underline-offset:3px;
+  transition:color 0.2s;
+}
+.exit-alt:hover{color:var(--text);}
+.exit-nota{
+  margin-top:18px; padding-top:16px; border-top:1px solid var(--glass-line-soft);
+  color:var(--muted); font-size:11px; line-height:1.5;
+}
+.exit-ok{text-align:center; padding:14px 0 6px;}
+.exit-ok .exit-tick{
+  width:52px; height:52px; margin:0 auto 16px; border-radius:50%;
+  background:linear-gradient(100deg,#EBC97F,#D9682B);
+  display:flex; align-items:center; justify-content:center;
+  color:var(--ink); font-size:1.5rem; font-weight:700;
+}
+@media(max-width:480px){
+  .exit-card{padding:28px 22px 22px; border-radius:20px;}
+  .exit-card h2{font-size:1.3rem;}
+}
 </style>
 </head>
 <body>
@@ -1243,6 +1323,53 @@ body.custom-cursor [role="button"]{cursor:none;}
   <button class="lightbox-close" id="lightboxClose" aria-label="Fechar">×</button>
   <img id="lightboxImg" src="" alt="">
 </div>
+<!-- Pop-up de saída: captura de contato -->
+<div class="exit-modal" id="exitModal" role="dialog" aria-modal="true" aria-labelledby="exitTitulo" aria-hidden="true">
+  <div class="exit-card">
+    <button class="exit-close" id="exitClose" type="button" aria-label="Fechar">×</button>
+
+    <div id="exitConteudo">
+      <span class="eyebrow">Antes de você ir</span>
+      <h2 id="exitTitulo">Me conta do seu projeto</h2>
+      <p class="exit-intro">Deixe seu contato que eu retorno com uma ideia do que dá para fazer — sem compromisso.</p>
+
+      <form id="exitForm" novalidate>
+        <label class="exit-campo">
+          <span>Nome</span>
+          <input id="exitNome" name="nome" type="text" placeholder="Como devo te chamar?"
+                 autocomplete="name" required>
+        </label>
+        <label class="exit-campo">
+          <span>WhatsApp</span>
+          <input id="exitZap" name="whatsapp" type="tel" placeholder="(11) 98894-6840"
+                 inputmode="numeric" autocomplete="tel" required>
+        </label>
+        <label class="exit-campo">
+          <span>E-mail <em class="exit-opcional">(opcional)</em></span>
+          <input id="exitMail" name="email" type="email" placeholder="voce@email.com"
+                 autocomplete="email">
+        </label>
+
+        <p class="exit-erro" id="exitErro" role="alert" aria-live="polite"></p>
+
+        <button type="submit" class="btn-primary">Enviar pelo WhatsApp</button>
+        <button type="button" class="exit-alt" id="exitMailBtn">prefiro enviar por e-mail</button>
+      </form>
+
+      <p class="exit-nota">
+        Seus dados vão direto para o WhatsApp ou o e-mail de Zorieuq, no seu próprio aplicativo.
+        Nada é gravado neste site.
+      </p>
+    </div>
+
+    <div id="exitSucesso" class="exit-ok" hidden>
+      <div class="exit-tick" aria-hidden="true">✓</div>
+      <h2>Combinado!</h2>
+      <p>Se a janela do WhatsApp não abrir, verifique se o navegador bloqueou o pop-up.</p>
+    </div>
+  </div>
+</div>
+
 
 <script>
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1646,6 +1773,162 @@ body.custom-cursor [role="button"]{cursor:none;}
     document.querySelectorAll('.video-slot.cinema-active').forEach(s => s.classList.remove('cinema-active'));
   }
   if(cinemaOverlay) cinemaOverlay.addEventListener('click', fecharModoCinema);
+
+  // ========== POP-UP DE SAÍDA ==========
+  // Aparece uma vez por visitante, quando ha sinal de que a pessoa vai embora.
+  // Regras de contencao: nunca nos primeiros 15s, nunca com outro modal aberto,
+  // e nao volta a aparecer por 30 dias depois de visto ou enviado.
+  const exitModal = document.getElementById('exitModal');
+  if (exitModal) {
+    const exitClose   = document.getElementById('exitClose');
+    const exitForm    = document.getElementById('exitForm');
+    const exitNome    = document.getElementById('exitNome');
+    const exitZap     = document.getElementById('exitZap');
+    const exitMail    = document.getElementById('exitMail');
+    const exitErro    = document.getElementById('exitErro');
+    const exitConteudo= document.getElementById('exitConteudo');
+    const exitSucesso = document.getElementById('exitSucesso');
+    const exitMailBtn = document.getElementById('exitMailBtn');
+
+    const WHATSAPP = '5511988946840';
+    const EMAIL    = 'zorieuqmiranda@gmail.com';
+    const CHAVE    = 'zm_exit_popup';
+    const DIAS     = 30;
+
+    const inicio = performance.now();
+    let jaMostrou = false, focoAnterior = null;
+
+    // localStorage pode lancar em navegacao privada — nunca deixar quebrar a pagina
+    const lembrar = () => { try { localStorage.setItem(CHAVE, String(Date.now())); } catch (e) {} };
+    const jaViu = () => {
+      try {
+        const t = Number(localStorage.getItem(CHAVE));
+        return !!t && (Date.now() - t) < DIAS * 864e5;
+      } catch (e) { return false; }
+    };
+
+    function podeMostrar(){
+      if (jaMostrou || jaViu()) return false;
+      if (performance.now() - inicio < 15000) return false;
+      if (document.body.classList.contains('menu-open')) return false;
+      if (document.body.classList.contains('lightbox-open')) return false;
+      return true;
+    }
+
+    function abrirExit(){
+      if (jaMostrou) return;
+      jaMostrou = true;
+      lembrar();
+      focoAnterior = document.activeElement;
+      exitModal.classList.add('open');
+      exitModal.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('lightbox-open');   // trava a rolagem do fundo
+      exitNome.focus();
+    }
+    function fecharExit(){
+      if (!exitModal.classList.contains('open')) return;
+      exitModal.classList.remove('open');
+      exitModal.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('lightbox-open');
+      if (focoAnterior && focoAnterior.focus) focoAnterior.focus();
+    }
+
+    // --- gatilho no desktop: o mouse sai pelo topo da janela
+    document.addEventListener('mouseout', (e) => {
+      if (e.clientY > 0 || e.relatedTarget) return;
+      if (podeMostrar()) abrirExit();
+    });
+
+    // --- gatilho no celular: rolagem rapida para cima depois de ter descido
+    let ultimoY = window.scrollY, ultimoT = performance.now(), desceu = false;
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY, t = performance.now(), dt = t - ultimoT;
+      if (y > window.innerHeight) desceu = true;
+      if (dt > 0) {
+        const subindo = (ultimoY - y) / dt;            // px por ms
+        if (desceu && subindo > 1.5 && y < window.innerHeight && podeMostrar()) abrirExit();
+      }
+      ultimoY = y; ultimoT = t;
+    }, { passive: true });
+
+    // --- pre-visualizacao: abrir com ?popup=1 para ver sem esperar
+    if (/[?&]popup=1/.test(location.search)) setTimeout(abrirExit, 400);
+
+    // --- fechar
+    exitClose.addEventListener('click', fecharExit);
+    exitModal.addEventListener('click', (e) => { if (e.target === exitModal) fecharExit(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && exitModal.classList.contains('open')) fecharExit();
+    });
+    // prende o foco dentro do formulario
+    exitModal.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const f = [...exitModal.querySelectorAll('button, input')].filter(el => el.offsetParent !== null);
+      if (!f.length) return;
+      const primeiro = f[0], ultimo = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
+    });
+
+    // --- mascara de telefone brasileiro
+    exitZap.addEventListener('input', () => {
+      const d = exitZap.value.replace(/\D/g, '').slice(0, 11);
+      let v = d;
+      if (d.length > 2 && d.length <= 6)       v = `(${d.slice(0,2)}) ${d.slice(2)}`;
+      else if (d.length > 6 && d.length <= 10) v = `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+      else if (d.length > 10)                  v = `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+      else if (d.length)                       v = `(${d}`;
+      exitZap.value = v;
+    });
+
+    function validar(){
+      exitErro.textContent = '';
+      [exitNome, exitZap, exitMail].forEach(c => c.removeAttribute('aria-invalid'));
+      const nome = exitNome.value.trim();
+      const zap  = exitZap.value.replace(/\D/g, '');
+      const mail = exitMail.value.trim();
+      if (nome.length < 2){
+        exitErro.textContent = 'Me diz seu nome, por favor.';
+        exitNome.setAttribute('aria-invalid','true'); exitNome.focus(); return null;
+      }
+      if (zap.length < 10){
+        exitErro.textContent = 'O WhatsApp precisa ter DDD e número — ex.: (11) 98894-6840.';
+        exitZap.setAttribute('aria-invalid','true'); exitZap.focus(); return null;
+      }
+      if (mail && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)){
+        exitErro.textContent = 'Esse e-mail parece incompleto.';
+        exitMail.setAttribute('aria-invalid','true'); exitMail.focus(); return null;
+      }
+      return { nome, zap: exitZap.value, mail };
+    }
+
+    function mensagem(d){
+      return `Olá, Zorieuq! Vim pelo seu portfólio.\n\n`
+           + `Nome: ${d.nome}\nWhatsApp: ${d.zap}\n`
+           + `E-mail: ${d.mail || 'não informado'}`;
+    }
+    function concluir(){
+      exitConteudo.hidden = true;
+      exitSucesso.hidden = false;
+      exitClose.focus();
+    }
+
+    exitForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const d = validar(); if (!d) return;
+      window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(mensagem(d))}`,
+                  '_blank', 'noopener');
+      concluir();
+    });
+
+    exitMailBtn.addEventListener('click', () => {
+      const d = validar(); if (!d) return;
+      window.location.href = `mailto:${EMAIL}`
+        + `?subject=${encodeURIComponent('Contato pelo portfólio — ' + d.nome)}`
+        + `&body=${encodeURIComponent(mensagem(d))}`;
+      concluir();
+    });
+  }
 </script>
 
 </body>
