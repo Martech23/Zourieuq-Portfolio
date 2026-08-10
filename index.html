@@ -43,6 +43,10 @@
   "description": "Videomaker e fotógrafo especializado em produção audiovisual, content branding gastronômico e social media para marcas e criadores de conteúdo."
 }
 </script>
+<!-- O poster do hero e a primeira coisa que o visitante ve. Antes ele era um
+     <img fetchpriority="high">; como poster de video ele perde essa prioridade,
+     e o preload devolve. -->
+<link rel="preload" as="image" href="teatro-municipal-paulista.jpg" fetchpriority="high">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Space+Mono&family=Inter:wght@400;600&display=swap">
@@ -330,22 +334,11 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
 }
 .hero-bg{
   position:absolute; inset:0; z-index:0;
-  width:100%; height:100%; object-fit:cover; object-position:center 28%;
-  filter:saturate(1.05) contrast(1.04) brightness(0.66) sepia(0.10);
-}
-/* Ken Burns: o zoom/pan lento que documentaristas usam para dar movimento a
-   uma imagem parada. Anima so transform — nada de width/height, que forcariam
-   recalculo de layout a cada quadro. A escala parte de 1.06 para haver margem
-   de sobra e o deslocamento nunca revelar a borda da foto. */
-@media (prefers-reduced-motion: no-preference){
-  .hero-bg{
-    animation:ken-burns 30s ease-in-out infinite alternate;
-    will-change:transform;
-  }
-}
-@keyframes ken-burns{
-  from{transform:scale(1.06) translate3d(0, 0, 0);}
-  to  {transform:scale(1.15) translate3d(-1.6%, -1.4%, 0);}
+  width:100%; height:100%; object-fit:cover; object-position:center 46%;
+  /* O video e bem mais claro que a foto que estava aqui: a fachada aparece
+     iluminada de noite. Com brightness(0.66), que servia para a foto, o titulo
+     laranja no celular caia de 4,48 para 3,25 de contraste. */
+  filter:saturate(1.05) contrast(1.04) brightness(0.60) sepia(0.10);
 }
 /* Veu leve: da o tom quente e funde a base da foto no fundo escuro da pagina,
    sem apagar o predio. */
@@ -362,7 +355,7 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
    fixed, entao o fundo logo abaixo do hero nunca e chapado — e a diferenca
    reaparecia como costura. Sumindo com as camadas da foto, o que fica embaixo e
    exatamente o mesmo fundo da secao seguinte, e nao sobra emenda para ver. */
-.hero-bg, .hero-canvas, .hero-veil, .hero-glass{
+.hero-bg, .hero-veil, .hero-glass{
   -webkit-mask-image:linear-gradient(180deg, #000 0 74%, rgba(0,0,0,0) 100%);
           mask-image:linear-gradient(180deg, #000 0 74%, rgba(0,0,0,0) 100%);
 }
@@ -391,13 +384,6 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
     inset 1px 0 0 rgba(255,255,255,0.09),
     inset -1px 0 0 rgba(255,255,255,0.09);
 }
-/* A foto do hero renderizada em WebGL, para poder ondular sob o cursor.
-   Fica abaixo da lamina de vidro e do texto. */
-.hero-canvas{
-  position:absolute; inset:0; z-index:0; pointer-events:none;
-  opacity:0; transition:opacity 1.4s ease;
-}
-.hero-canvas.on{opacity:1;}
 .hero-content{position:relative; z-index:4; width:100%;}
 /* Sem fundo proprio: o vidro agora e a tela toda, nao um cartao */
 .hero-panel{max-width:640px;}
@@ -475,12 +461,15 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
   }
   .hero h1{max-width:21ch;}
   .hero .sub{max-width:64ch;}
-  .hero-bg{object-position:center 34%;}
+  .hero-bg{object-position:center 50%;}
 }
 
 @media(max-width:860px){
   .hero{min-height:auto; padding:104px 0 72px;}
-  .hero-bg{object-position:center 20%;}
+  .hero-bg{object-position:center 42%;
+    /* No celular o texto encosta direto no video, sem a lamina de vidro que o
+       desktop tem, entao aqui ele precisa de mais escurecimento. */
+    filter:saturate(1.05) contrast(1.04) brightness(0.50) sepia(0.10);}
   /* Sem vidro no celular: o hero e a foto do teatro e o texto sobre ela.
      A lamina inteira sai — o tom, o fio de luz das bordas e o desfoque.
      Nenhum backdrop-filter sobra aqui: era o do .hero-panel que desenhava o
@@ -491,9 +480,13 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
     background:
       radial-gradient(ellipse at 24% 40%, rgba(201,162,75,0.20), transparent 60%),
       radial-gradient(ellipse at 82% 30%, rgba(217,104,43,0.14), transparent 58%),
+      /* Reforcado para o video: a fachada iluminada e bem mais clara que a foto
+         que estava aqui, e no celular o texto encosta direto nela. Medido, o
+         titulo laranja caia para 3,53 de contraste (o minimo e 3,0) com os
+         valores antigos. */
       linear-gradient(188deg,
-        rgba(10,8,7,0.18) 0%, rgba(10,8,7,0.46) 22%, rgba(10,8,7,0.68) 46%,
-        rgba(10,8,7,0.84) 72%, rgba(10,8,7,0.92) 100%),
+        rgba(10,8,7,0.30) 0%, rgba(10,8,7,0.66) 20%, rgba(10,8,7,0.80) 44%,
+        rgba(10,8,7,0.90) 72%, rgba(10,8,7,0.94) 100%),
       linear-gradient(180deg, rgba(10,8,7,0.34) 0%, rgba(10,8,7,0.10) 38%,
         rgba(10,8,7,0.62) 82%, rgba(10,8,7,0.96) 100%);
   }
@@ -1021,10 +1014,11 @@ body.custom-cursor [role="button"]{cursor:none;}
 </div>
 
 <section class="hero" id="top">
-  <img class="hero-bg" src="teatro-municipal-paulista.jpg" alt="" width="960" height="1280" fetchpriority="high">
+  <video class="hero-bg" id="heroVideo" poster="teatro-municipal-paulista.jpg"
+         muted loop playsinline preload="none" aria-hidden="true"
+         width="1280" height="714"></video>
   <div class="hero-veil" aria-hidden="true"></div>
   <div class="hero-glass" aria-hidden="true"></div>
-  <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="wrap hero-content">
     <div class="hero-panel">
       <h1 class="display">Zorieuq Miranda <span class="gold">Videomaker e Fotógrafo</span></h1>
@@ -2044,194 +2038,36 @@ body.custom-cursor [role="button"]{cursor:none;}
     });
   }
 
-  // ========== FOTO DO HERO COM ONDULAÇÃO (Three.js) ==========
-  // A foto do teatro passa por um shader para poder ondular sob o cursor. A
-  // <img> continua no HTML e so e escondida quando o WebGL assume: se algo aqui
-  // falhar, a foto normal com o Ken Burns em CSS permanece no lugar.
-  //
-  // Tres decisoes de custo, porque o hero ja carrega backdrop-filter:
-  //   1. A biblioteca (183 KB gzipado) entra por import() dinamico, depois do
-  //      load e de uma janela ociosa — fora do caminho critico.
-  //   2. O loop para quando o hero sai da tela.
-  //   3. Nada disso roda com prefers-reduced-motion nem sem WebGL.
-  async function ondaHero(){
-    const canvas  = document.getElementById('heroCanvas');
-    const imgHero = document.querySelector('.hero-bg');
-    const hero    = document.querySelector('.hero');
-    if(!canvas || !imgHero || !hero || reduceMotion) return;
-
-    try{
-      const teste = document.createElement('canvas');
-      if(!(teste.getContext('webgl2') || teste.getContext('webgl'))) return;
-    }catch(e){ return; }
-
-    let THREE;
-    try{ THREE = await import('./vendor/three.module.min.js'); }
-    catch(e){ return; }
-
-    const render = new THREE.WebGLRenderer({canvas, antialias:false,
-                                            powerPreference:'low-power'});
-    const tex = new THREE.TextureLoader().load(
-      imgHero.currentSrc || imgHero.src,
-      () => { imgHero.style.opacity = '0'; canvas.classList.add('on'); }
-    );
-    tex.colorSpace = THREE.SRGBColorSpace;
-    tex.minFilter = tex.magFilter = THREE.LinearFilter;
-
-    const uni = {
-      uTex:    {value: tex},
-      uRes:    {value: new THREE.Vector2(1,1)},
-      uTexRes: {value: new THREE.Vector2(imgHero.naturalWidth || 960,
-                                         imgHero.naturalHeight || 1280)},
-      uTime:   {value: 0},
-      uPtr:    {value: new THREE.Vector2(0.5, 0.5)},
-      uForca:  {value: 0},
-      uKen:    {value: 0}
+  // ========== VIDEO DO HERO ==========
+  // O video so comeca a baixar depois que a pagina esta pronta. Ate la fica o
+  // poster, que e a mesma foto do teatro que ocupava este lugar antes — a capa
+  // aparece inteira no primeiro quadro e o video entra por cima quando chega.
+  // Sao 1,3 MB que nunca disputam banda com o que o visitante ve primeiro.
+  const videoHero = document.getElementById('heroVideo');
+  if (videoHero && !reduceMotion) {
+    const comecar = () => {
+      // WebM/VP9 onde da, MP4/H.264 no resto. Os dois pesam o mesmo (1,3 MB) e
+      // o navegador baixa so um; o MP4 existe porque o iOS nao le VP9 em toda
+      // versao, e e justamente de celular que a maioria vai chegar.
+      videoHero.src = videoHero.canPlayType('video/webm; codecs="vp9"')
+        ? 'teatro-municipal.webm' : 'teatro-municipal.mp4';
+      // Se o navegador recusar o autoplay, o poster continua no lugar e a capa
+      // fica exatamente como era antes do video.
+      videoHero.play().catch(() => {});
     };
+    if (document.readyState === 'complete') comecar();
+    else window.addEventListener('load', comecar, {once:true});
 
-    const mat = new THREE.ShaderMaterial({
-      uniforms: uni, depthWrite:false, depthTest:false,
-      vertexShader:`
-        varying vec2 vUv;
-        void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }`,
-      fragmentShader:`
-        precision highp float;
-        varying vec2 vUv;
-        uniform sampler2D uTex;
-        uniform vec2 uRes, uTexRes, uPtr;
-        uniform float uTime, uForca, uKen;
-
-        // O filtro do CSS opera em sRGB, mas a amostra chega em linear (e o
-        // renderer converte de volta na saida). Sem esta ida e volta,
-        // multiplicar por 0.66 em linear clareia demais: medido, os rotulos
-        // caiam de 5,74 para 2,76 de contraste.
-        vec3 paraSRGB(vec3 c){
-          return mix(12.92*c, 1.055*pow(max(c,0.0), vec3(1.0/2.4)) - 0.055,
-                     step(vec3(0.0031308), c));
-        }
-        vec3 paraLinear(vec3 c){
-          return mix(c/12.92, pow((max(c,0.0)+0.055)/1.055, vec3(2.4)),
-                     step(vec3(0.04045), c));
-        }
-
-        void main(){
-          vec2 uv = vUv;
-
-          // ondulacao: aneis suaves saindo do cursor, somem com a distancia
-          vec2 d = uv - uPtr;
-          d.x *= uRes.x / uRes.y;
-          float dist = length(d);
-          float onda = sin(dist * 17.0 - uTime * 2.2) * exp(-dist * 6.5);
-          uv += normalize(d + 1e-5) * onda * 0.007 * uForca;
-
-          // GIRO: a foto e tratada como um plano girando devagar em torno do
-          // eixo vertical, e o que se ve e a projecao em perspectiva desse
-          // plano. Nao e um deslize lateral: as verticais convergem de um lado
-          // e abrem do outro, que e o que faz o predio parecer virar.
-          //   ponto do plano (tx,ty,0) girado de th e projetado a distancia 1
-          //   -> tx = sx / (cos th - sx sen th);  ty = sy (1 + tx sen th)
-          float th = 0.225 * sin(uTime * 0.16);
-          vec2 sp = uv - 0.5;
-          float sen = sin(th), cosg = cos(th);
-          float tx = sp.x / (cosg - sp.x * sen);
-          float ty = sp.y * (1.0 + tx * sen);
-          uv = vec2(tx, ty) + 0.5;
-
-          // Ken Burns por cima do giro. A escala subiu de 1.06-1.15 para
-          // 1.22-1.32: no extremo do giro a perspectiva estica a area
-          // amostrada em ~15% nas quinas, e sem essa folga a borda da foto
-          // entraria no quadro.
-          float esc = mix(1.22, 1.32, uKen);
-          uv = (uv - 0.5) / esc + 0.5 + vec2(-0.016, -0.014) * uKen;
-
-          // enquadramento "cover". No CSS a porcentagem conta do topo; em UV o
-          // v cresce para cima, por isso 34% vira 0,66.
-          float aC = uRes.x / uRes.y, aT = uTexRes.x / uTexRes.y;
-          if (aC > aT) {
-            float meia = (aT / aC) * 0.5;
-            uv.y = (uv.y - 0.5) * (aT / aC) + (0.66 - 0.32 * meia);
-          } else {
-            uv.x = (uv.x - 0.5) * (aC / aT) + 0.5;
-          }
-
-          vec3 c = paraSRGB(texture2D(uTex, clamp(uv, 0.001, 0.999)).rgb);
-
-          // mesmo filtro que estava na <img>:
-          // saturate(1.05) contrast(1.04) brightness(0.66) sepia(0.10)
-          float l = dot(c, vec3(0.2126, 0.7152, 0.0722));
-          c = mix(vec3(l), c, 1.05);
-          c = (c - 0.5) * 1.04 + 0.5;
-          c *= 0.66;
-          vec3 sep = vec3(dot(c, vec3(0.393,0.769,0.189)),
-                          dot(c, vec3(0.349,0.686,0.168)),
-                          dot(c, vec3(0.272,0.534,0.131)));
-          c = mix(c, sep, 0.10);
-
-          gl_FragColor = vec4(paraLinear(clamp(c, 0.0, 1.0)), 1.0);
-        }`
-    });
-
-    const cena = new THREE.Scene();
-    cena.add(new THREE.Mesh(new THREE.PlaneGeometry(2,2), mat));
-    const cam = new THREE.Camera();
-
-    function dimensionar(){
-      const r = hero.getBoundingClientRect();
-      // O shader roda por pixel: em 2x sao ~3,7 milhoes de pixels por quadro.
-      // A foto e escurecida e fica sob a lamina de vidro, entao 1.4x nao se
-      // distingue de 2x aqui e custa metade.
-      render.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.4));
-      render.setSize(r.width, r.height, false);
-      uni.uRes.value.set(r.width, r.height);
-    }
-    dimensionar();
-    window.addEventListener('resize', dimensionar, {passive:true});
-
-    function apontar(x, y){
-      const r = hero.getBoundingClientRect();
-      uni.uPtr.value.set((x - r.left)/r.width, 1.0 - (y - r.top)/r.height);
-      uni.uForca.value = 1.0;                  // decai sozinha no loop
-    }
-    window.addEventListener('mousemove', e => apontar(e.clientX, e.clientY), {passive:true});
-    window.addEventListener('touchmove', e => {
-      if(e.touches[0]) apontar(e.touches[0].clientX, e.touches[0].clientY);
-    }, {passive:true});
-
-    let visivel = true, rodando = false;
-    if('IntersectionObserver' in window){
+    // Fora da tela ele para: nenhum quadro decodificado a toa enquanto a pessoa
+    // le o resto da pagina.
+    if ('IntersectionObserver' in window) {
       new IntersectionObserver(es => {
-        visivel = es[0].isIntersecting;
-        if(visivel && !rodando){ rodando = true; requestAnimationFrame(quadro); }
-      }, {threshold:0}).observe(hero);
+        if (!videoHero.src) return;
+        if (es[0].isIntersecting) videoHero.play().catch(() => {});
+        else videoHero.pause();
+      }, {threshold:0}).observe(videoHero);
     }
-
-    let anterior = performance.now(), desdeUltimo = 0;
-    function quadro(agora){
-      if(!visivel){ rodando = false; return; }
-      const dt = Math.min((agora - anterior)/1000, 0.05);
-      anterior = agora;
-      uni.uTime.value += dt;
-      uni.uForca.value *= Math.pow(0.28, dt);          // a onda some em ~1s
-      uni.uKen.value = 0.5 - 0.5*Math.cos((uni.uTime.value/30)*Math.PI*2);
-      // Taxa cheia enquanto a onda esta viva, para o toque responder na hora.
-      // Parado, o Ken Burns leva 30s de ponta a ponta — 30 fps nao se percebe
-      // e economiza metade dos quadros.
-      desdeUltimo += dt;
-      if(uni.uForca.value > 0.02 || desdeUltimo >= 1/30){
-        render.render(cena, cam);
-        desdeUltimo = 0;
-      }
-      requestAnimationFrame(quadro);
-    }
-    rodando = true;
-    requestAnimationFrame(quadro);
   }
-  (function agendarOnda(){
-    const ocioso = window.requestIdleCallback || (cb => setTimeout(cb, 300));
-    const iniciar = () => ocioso(() => ondaHero());
-    if(document.readyState === 'complete') iniciar();
-    else window.addEventListener('load', iniciar, {once:true});
-  })();
 
 </script>
 
