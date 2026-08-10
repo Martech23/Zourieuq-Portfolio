@@ -2113,9 +2113,24 @@ body.custom-cursor [role="button"]{cursor:none;}
           float onda = sin(dist * 17.0 - uTime * 2.2) * exp(-dist * 6.5);
           uv += normalize(d + 1e-5) * onda * 0.007 * uForca;
 
-          // Ken Burns: mesmo percurso do CSS (1.06 -> 1.15, -1,6% e -1,4%),
-          // refeito aqui porque a foto agora passa pelo shader
-          float esc = mix(1.06, 1.15, uKen);
+          // GIRO: a foto e tratada como um plano girando devagar em torno do
+          // eixo vertical, e o que se ve e a projecao em perspectiva desse
+          // plano. Nao e um deslize lateral: as verticais convergem de um lado
+          // e abrem do outro, que e o que faz o predio parecer virar.
+          //   ponto do plano (tx,ty,0) girado de th e projetado a distancia 1
+          //   -> tx = sx / (cos th - sx sen th);  ty = sy (1 + tx sen th)
+          float th = 0.225 * sin(uTime * 0.16);
+          vec2 sp = uv - 0.5;
+          float sen = sin(th), cosg = cos(th);
+          float tx = sp.x / (cosg - sp.x * sen);
+          float ty = sp.y * (1.0 + tx * sen);
+          uv = vec2(tx, ty) + 0.5;
+
+          // Ken Burns por cima do giro. A escala subiu de 1.06-1.15 para
+          // 1.22-1.32: no extremo do giro a perspectiva estica a area
+          // amostrada em ~15% nas quinas, e sem essa folga a borda da foto
+          // entraria no quadro.
+          float esc = mix(1.22, 1.32, uKen);
           uv = (uv - 0.5) / esc + 0.5 + vec2(-0.016, -0.014) * uKen;
 
           // enquadramento "cover". No CSS a porcentagem conta do topo; em UV o
