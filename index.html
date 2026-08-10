@@ -66,7 +66,6 @@
   --glass-2:rgba(255,255,255,0.085);
   --glass-line:rgba(255,255,255,0.14);
   --glass-line-soft:rgba(255,255,255,0.085);
-  --blur:14px;
 
   /* iridescencia */
   --iris-1:#D9682B;
@@ -148,14 +147,6 @@ nav, .card, .comp, .tool, .case, .stat, .destaque-card,
 /* Desfocar o fundo custa caro: medido no scroll, 26 paineis com backdrop-filter
    deixaram a pagina ~3x mais lenta. Ele fica so onde e indispensavel — o que
    flutua sobre a foto do hero ou sobre o conteudo rolando. */
-/* Só o painel do hero desfoca de verdade: ele fica sobre a foto do teatro, onde
-   o efeito de vidro se ve. A nav e sticky — desfocar ali obriga o navegador a
-   recompor a pagina inteira a cada quadro da rolagem (medido: 2x mais lento),
-   e sobre um fundo escuro um vidro mais denso fica praticamente igual. */
-.hero-panel{
-  -webkit-backdrop-filter:blur(var(--blur));
-  backdrop-filter:blur(var(--blur));
-}
 nav{background:rgba(20,18,16,0.88);}
 /* Os cartoes repetidos ficam sobre a aurora, que ja e um degrade suave: um
    brilho direcional imita o reflexo do vidro sem nenhum custo de composicao. */
@@ -163,13 +154,6 @@ nav{background:rgba(20,18,16,0.88);}
 .soft-badge, .car-slot, .video-slot, .thumb-card{
   background:linear-gradient(155deg, rgba(255,255,255,0.10), rgba(255,255,255,0.038) 62%);
 }
-/* Sem suporte a backdrop-filter o texto ficaria sobre a aurora crua. So no
-   desktop: no celular a leitura vem do veu, que nao depende de desfoque, e um
-   fundo solido aqui traria de volta o retangulo que acabamos de tirar. */
-@supports not ((backdrop-filter:blur(4px)) or (-webkit-backdrop-filter:blur(4px))){
-  @media(min-width:861px){ .hero-panel{background:rgba(20,18,16,0.92);} }
-}
-
 /* Borda luminosa: um fio de luz que corre no canto superior esquerdo,
    como a quina de uma placa de vidro pegando luz. */
 @supports ((-webkit-mask-composite:xor) or (mask-composite:exclude)){
@@ -461,7 +445,34 @@ body.menu-open nav{background:rgba(20,18,16,0.72);}
    bastaria — o conteudo tinha 547px de altura e era ele que definia o piso. */
 @media(min-width:861px){
   .hero{min-height:min(74vh, 640px); padding:92px 0 72px;}
-  .hero-panel{max-width:800px;}
+  /* O painel deixa de desfocar e passa a ser vidro como os cartoes: superficie
+     translucida, fio de luz na quina e o teatro nitido atras. O desfoque
+     embacava justamente a foto que e o assunto da capa.
+     O tom escuro embaixo do brilho nao e decorativo: so a camada clara dos
+     cartoes levantaria o fundo de RGB(31,22,14) para (53,45,38), e ali o
+     subtitulo cairia de 5,85 para cerca de 3,8 — abaixo do minimo. */
+  .hero-panel{
+    max-width:800px;
+    padding:34px 38px 38px;
+    border-radius:var(--r);
+    border:1px solid var(--glass-line-soft);
+    background:linear-gradient(155deg, rgba(255,255,255,0.10),
+                                       rgba(255,255,255,0.038) 62%),
+               rgba(10,8,7,0.52);
+    position:relative;
+  }
+  @supports ((-webkit-mask-composite:xor) or (mask-composite:exclude)){
+    .hero-panel::before{
+      content:""; position:absolute; inset:0; border-radius:inherit;
+      padding:1px; pointer-events:none;
+      background:linear-gradient(135deg,
+        rgba(255,255,255,0.45), rgba(255,255,255,0.04) 38%,
+        rgba(255,255,255,0) 62%, rgba(255,255,255,0.20));
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+              mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor; mask-composite:exclude;
+    }
+  }
   .hero h1{max-width:21ch;}
   .hero .sub{max-width:64ch;}
   .hero-bg{object-position:center 34%;}
