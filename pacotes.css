@@ -1,0 +1,15 @@
+.pacotes-lede{color:var(--muted);max-width:62ch;margin:0 0 36px}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.price-card{padding:28px 24px 24px;display:flex;flex-direction:column;gap:10px}
+.price-card.featured{background:linear-gradient(155deg,rgba(217,104,43,.18),rgba(255,255,255,.04) 62%);border-color:rgba(217,104,43,.35)}
+.price-card h3{font-family:'Space Grotesk',sans-serif;font-size:1.35rem;letter-spacing:-.02em}
+.price-value{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:2.15rem;letter-spacing:-.04em;line-height:1}
+.price-value small{font-size:.42em;color:var(--muted);font-weight:500;margin-left:4px}
+.price-note{color:var(--muted);font-size:13px;margin-bottom:8px}
+.price-list{list-style:none;color:#C9C2B4;font-size:14px;line-height:1.55;margin:6px 0 16px}
+.price-list li{padding:7px 0;border-bottom:1px solid var(--glass-line-soft)}
+.price-list li:last-child{border-bottom:0}
+.price-card .btn-pack{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:100px;font-size:13px;font-weight:600;background:linear-gradient(100deg,#EBC97F,#D9682B 45%,#C9A24B);color:var(--ink)}
+.price-card .btn-pack.ghost{background:transparent;color:var(--text);border:1px solid var(--glass-line)}
+.price-disclaimer{margin-top:22px;color:var(--muted);font-size:12.5px;max-width:78ch}
+@media(max-width:860px){.price-grid{grid-template-columns:1fr}}
