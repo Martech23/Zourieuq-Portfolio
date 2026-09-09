@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://zourieuqmiranda.vercel.app/sitemap.xml
+# deploy 2026-09-09: volta o site original
